@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاسبات دارویی، سرم و میکروست</title>
+    <style>
+        /* تنظیمات کلی */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: #1a1a1a; /* پس‌زمینه تیره */
+            margin: 0;
+            padding: 0;
+            color: #fff; /* متن سفید */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .light-theme {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #2c3e50; /* پس‌زمینه خاکستری تیره */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .light-theme .container {
+            background-color: #fff;
+            color: #333;
+        }
+
+        h2 {
+            color: inherit;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: inherit;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            background-color: #34495e; /* پس‌زمینه خاکستری روشن */
+            color: #fff; /* متن سفید */
+        }
+
+        .light-theme input, .light-theme select {
+            background-color: #eee;
+            color: #333;
+        }
+
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #34495e; /* پس‌زمینه خاکستری روشن */
+            border-radius: 5px;
+            font-size: 16px;
+            color: #fff; /* متن سفید */
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .light-theme .result {
+            background-color: #eee;
+            color: #333;
+        }
+
+        .result.show {
+            opacity: 1;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .accordion {
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            text-align: right;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px; /* فاصله بین کشوها */
+        }
+
+        .accordion:hover {
+            opacity: 0.9;
+        }
+
+        .accordion-content {
+            padding: 10px;
+            display: none;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-content.show {
+            display: block;
+        }
+
+        /* رنگ‌های متفاوت برای کشوها */
+        #drugCalculationBtn {
+            background-color: #3498db; /* آبی */
+        }
+
+        #fluidCalculationBtn {
+            background-color: #e67e22; /* نارنجی */
+        }
+
+        #microsetCalculationBtn {
+            background-color: #9b59b6; /* بنفش */
+        }
+
+        #pediatricDrugCalculationBtn {
+            background-color: #2ecc71; /* سبز */
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .light-theme footer {
+            color: #666;
+        }
+
+        /* دکمه تغییر تم */
+        #themeToggle {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<!-- دکمه تغییر تم -->
+<button id="themeToggle" onclick="toggleTheme()">Light Mode</button>
+
+<div class="container">
+    <!-- تاریخ و ساعت -->
+    <div id="datetime" style="text-align: center; margin-bottom: 20px; font-size: 18px;"></div>
+
+    <!-- کشوی محاسبات دارویی -->
+    <button class="accordion" id="drugCalculationBtn" onclick="toggleAccordion('drugCalculation')">محاسبات دارویی</button>
+    <div class="accordion-content" id="drugCalculation">
+        <!-- دوز دارو -->
+        <label for="drugDose">دوز دارو:</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="number" id="drugDose" placeholder="دوز دارو را وارد کنید">
+            <select id="drugDoseUnit">
+                <option value="mg">mg</option>
+                <option value="mcg">mcg</option>
+                <option value="U">U</option>
+            </select>
+        </div>
+
+        <!-- حجم سرنگ -->
+        <label for="syringeVolume">حجم سرنگ (سی‌سی):</label>
+        <input type="number" id="syringeVolume" placeholder="حجم سرنگ را وارد کنید">
+
+        <!-- دوز تجویزی -->
+        <label for="prescribedDose">دوز تجویزی:</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="number" id="prescribedDose" placeholder="دوز تجویزی را وارد کنید">
+            <select id="prescribedDoseUnit" onchange="toggleWeightInput()">
+                <option value="mcg/kg/min">mcg/kg/min</option>
+                <option value="mg/h">mg/h</option>
+                <option value="mcg/min">mcg/min</option>
+                <option value="mcg/h">mcg/h</option>
+                <option value="U/h">U/h</option>
+            </select>
+        </div>
+
+        <!-- وزن (فقط برای دوزهای وابسته به وزن) -->
+        <div id="weightInput" class="hidden">
+            <label for="weight">وزن بیمار (کیلوگرم):</label>
+            <input type="number" id="weight" placeholder="وزن بیمار را وارد کنید">
+        </div>
+
+        <button onclick="calculateDrug()">محاسبه دارو</button>
+
+        <div class="result" id="drugResult"></div>
+    </div>
+
+    <!-- کشوی محاسبات سرم -->
+    <button class="accordion" id="fluidCalculationBtn" onclick="toggleAccordion('fluidCalculation')">محاسبات سرم</button>
+    <div class="accordion-content" id="fluidCalculation">
+        <!-- حجم سرم -->
+        <label for="fluidVolume">حجم سرم (میلی‌لیتر):</label>
+        <input type="number" id="fluidVolume" placeholder="حجم سرم را وارد کنید">
+
+        <!-- زمان تزریق -->
+        <label for="infusionTime">زمان تزریق (ساعت):</label>
+        <input type="number" id="infusionTime" placeholder="زمان تزریق را وارد کنید">
+
+        <!-- نوع ست سرم -->
+        <label for="dripSet">نوع ست سرم:</label>
+        <select id="dripSet">
+            <option value="10">۱۰ قطره بر میلی‌لیتر</option>
+            <option value="20">۲۰ قطره بر میلی‌لیتر</option>
+        </select>
+
+        <!-- تعداد قطرات بر دقیقه -->
+        <label for="fluidDropsPerMinute">تعداد قطرات بر دقیقه (gtt/min):</label>
+        <input type="number" id="fluidDropsPerMinute" placeholder="تعداد قطرات بر دقیقه را وارد کنید">
+
+        <button onclick="calculateFluid()">محاسبه سرم</button>
+
+        <div class="result" id="fluidResult"></div>
+    </div>
+
+    <!-- کشوی محاسبات میکروست -->
+    <button class="accordion" id="microsetCalculationBtn" onclick="toggleAccordion('microsetCalculation')">محاسبات میکروست</button>
+    <div class="accordion-content" id="microsetCalculation">
+        <!-- حجم میکروست -->
+        <label for="microsetVolume">حجم میکروست (میلی‌لیتر):</label>
+        <input type="number" id="microsetVolume" placeholder="حجم میکروست را وارد کنید">
+
+        <!-- زمان تزریق -->
+        <label for="microsetInfusionTime">زمان تزریق (ساعت):</label>
+        <input type="number" id="microsetInfusionTime" placeholder="زمان تزریق را وارد کنید">
+
+        <!-- تعداد قطرات بر دقیقه -->
+        <label for="dropsPerMinute">تعداد قطرات بر دقیقه (gtt/min):</label>
+        <input type="number" id="dropsPerMinute" placeholder="تعداد قطرات بر دقیقه را وارد کنید">
+
+        <button onclick="calculateMicroset()">محاسبه میکروست</button>
+
+        <div class="result" id="microsetResult"></div>
+    </div>
+
+    <!-- کشوی محاسبات دارویی اطفال -->
+    <button class="accordion" id="pediatricDrugCalculationBtn" onclick="toggleAccordion('pediatricDrugCalculation')">محاسبات دارویی اطفال</button>
+    <div class="accordion-content" id="pediatricDrugCalculation">
+        <!-- حجم بر حسب ��ی‌سی -->
+        <label for="volumeCC">حجم بر حسب سی‌سی:</label>
+        <input type="number" id="volumeCC" placeholder="حجم را وارد کنید (مثال: 0.175)">
+
+        <button onclick="calculatePediatricDrug()">محاسبه واحدهای انسولین</button>
+
+        <div class="result" id="pediatricDrugResult"></div>
+    </div>
+
+    <!-- دکمه چاپ -->
+    <button onclick="printActiveSection()" style="margin-top: 20px;">چاپ صفحه</button>
+
+    <!-- دکمه گزارش خطا -->
+    <button onclick="reportError()" style="margin-top: 20px;">گزارش خطا</button>
+</div>
+
+<!-- نویسنده کد -->
+<footer>
+    Code by: Tavakol
+</footer>
+
+<script>
+    // تابع برای نمایش تاریخ و ساعت
+    function updateDateTime() {
+        const now = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        document.getElementById('datetime').innerText = now.toLocaleDateString('fa-IR', options);
+    }
+    setInterval(updateDateTime, 1000);
+
+    // تابع تغییر تم
+    function toggleTheme() {
+        const body = document.body;
+        body.classList.toggle('light-theme');
+        const themeToggle = document.getElementById('themeToggle');
+        if (body.classList.contains('light-theme')) {
+            themeToggle.innerText = 'Dark Mode';
+        } else {
+            themeToggle.innerText = 'Light Mode';
+        }
+    }
+
+    // تابع برای باز و بسته کردن کشوها
+    function toggleAccordion(id) {
+        const content = document.getElementById(id);
+        content.classList.toggle('show');
+    }
+
+    // تابع برای نمایش یا مخفی کردن باکس وزن
+    function toggleWeightInput() {
+        const prescribedDoseUnit = document.getElementById('prescribedDoseUnit').value;
+        const weightInput = document.getElementById('weightInput');
+        if (prescribedDoseUnit === 'mcg/kg/min') {
+            weightInput.classList.remove('hidden');
+        } else {
+            weightInput.classList.add('hidden');
+        }
+    }
+
+    // فراخوانی تابع هنگام بارگذاری صفحه
+    window.onload = function() {
+        toggleWeightInput(); // بررسی اولیه برای نمایش باکس وزن
+    };
+
+    // تابع محاسبه دارو
+    function calculateDrug() {
+        const drugDose = parseFloat(document.getElementById('drugDose').value);
+        const drugDoseUnit = document.getElementById('drugDoseUnit').value;
+        const syringeVolume = parseFloat(document.getElementById('syringeVolume').value);
+        const prescribedDose = parseFloat(document.getElementById('prescribedDose').value);
+        const prescribedDoseUnit = document.getElementById('prescribedDoseUnit').value;
+        const weight = parseFloat(document.getElementById('weight').value);
+
+        // بررسی مقادیر ورودی
+        if (isNaN(drugDose) || isNaN(syringeVolume) || isNaN(prescribedDose)) {
+            document.getElementById('drugResult').innerText = "لطفاً تمام مقادیر را به درستی وارد کنید.";
+            return;
+        }
+
+        // تبدیل واحد دوز دارو به میلی‌گرم یا واحد (U)
+        let drugDoseMgOrU = drugDose;
+        if (drugDoseUnit === 'mcg') {
+            drugDoseMgOrU = drugDose / 1000; // تبدیل میکروگرم به میلی‌گرم
+        }
+
+        // محاسبه دوز تجویزی بر حسب میلی‌گرم بر ساعت یا واحد بر ساعت (U/h)
+        let prescribedDoseMgOrUPerHour;
+        switch (prescribedDoseUnit) {
+            case 'mcg/kg/min':
+                if (isNaN(weight)) {
+                    document.getElementById('drugResult').innerText = "لطفاً وزن بیمار را وارد کنید.";
+                    return;
+                }
+                prescribedDoseMgOrUPerHour = (prescribedDose * weight * 60) / 1000; // تبدیل به میلی‌گرم بر ساعت
+                break;
+            case 'mg/h':
+                prescribedDoseMgOrUPerHour = prescribedDose;
+                break;
+            case 'mcg/min':
+                prescribedDoseMgOrUPerHour = (prescribedDose * 60) / 1000; // تبدیل به میلی‌گرم بر ساعت
+                break;
+            case 'mcg/h':
+                prescribedDoseMgOrUPerHour = prescribedDose / 1000; // تبدیل میکروگرم بر ساعت به میلی‌گرم بر ساعت
+                break;
+            case 'U/h':
+                prescribedDoseMgOrUPerHour = prescribedDose; // واحد بر ساعت (U/h)
+                break;
+            default:
+                document.getElementById('drugResult').innerText = "واحد دوز تجویزی نامعتبر است.";
+                return;
+        }
+
+        // محاسبه نرخ تزریق (cc/h)
+        const infusionRate = (prescribedDoseMgOrUPerHour / drugDoseMgOrU) * syringeVolume;
+
+        // نمایش نتیجه
+        const resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} cc/h`;
+        document.getElementById('drugResult').innerText = resultText;
+        document.getElementById('drugResult').classList.add('show');
+    }
+
+    // تابع محاسبه سرم
+    function calculateFluid() {
+        const fluidVolume = parseFloat(document.getElementById('fluidVolume').value);
+        const infusionTime = parseFloat(document.getElementById('infusionTime').value);
+        const dripSet = parseFloat(document.getElementById('dripSet').value);
+        const fluidDropsPerMinute = parseFloat(document.getElementById('fluidDropsPerMinute').value);
+
+        if (isNaN(fluidVolume) && isNaN(infusionTime) && isNaN(fluidDropsPerMinute)) {
+            document.getElementById('fluidResult').innerText = "لطفاً حداقل حجم سرم، زمان تزریق یا تعداد قطرات بر دقیقه را وارد کنید.";
+            return;
+        }
+
+        let resultText = '';
+        if (!isNaN(fluidDropsPerMinute)) {
+            if (!isNaN(fluidVolume)) {
+                const infusionTime = (fluidVolume * dripSet) / (fluidDropsPerMinute * 60);
+                resultText = `زمان تزریق: ${infusionTime.toFixed(2)} ساعت`;
+            } else if (!isNaN(infusionTime)) {
+                const volume = (fluidDropsPerMinute * infusionTime * 60) / dripSet;
+                resultText = `حجم سرم: ${volume.toFixed(2)} میلی‌لیتر`;
+            }
+        } else {
+            const dropsPerMinute = (fluidVolume * dripSet) / (infusionTime * 60);
+            resultText = `تعداد قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
+        }
+
+        document.getElementById('fluidResult').innerText = resultText;
+        document.getElementById('fluidResult').classList.add('show');
+    }
+
+    // تابع محاسبه میکروست
+    function calculateMicroset() {
+        const microsetVolume = parseFloat(document.getElementById('microsetVolume').value);
+        const microsetInfusionTime = parseFloat(document.getElementById('microsetInfusionTime').value);
+        const dropsPerMinute = parseFloat(document.getElementById('dropsPerMinute').value);
+
+        if (isNaN(microsetVolume) && isNaN(microsetInfusionTime)) {
+            document.getElementById('microsetResult').innerText = "لطفاً حداقل حجم میکروست یا زمان تزریق را وارد کنید.";
+            return;
+        }
+
+        let resultText = '';
+        if (!isNaN(dropsPerMinute)) {
+            if (!isNaN(microsetVolume)) {
+                const infusionTime = (microsetVolume * 60) / (dropsPerMinute * 60);
+                resultText = `زمان تزریق: ${infusionTime.toFixed(2)} ساعت`;
+            } else if (!isNaN(microsetInfusionTime)) {
+                const volume = (dropsPerMinute * microsetInfusionTime * 60) / 60;
+                resultText = `حجم میکروست: ${volume.toFixed(2)} میلی‌لیتر`;
+            }
+        } else {
+            const dropsPerMinute = (microsetVolume * 60) / (microsetInfusionTime * 60);
+            resultText = `تعداد قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
+        }
+
+        document.getElementById('microsetResult').innerText = resultText;
+        document.getElementById('microsetResult').classList.add('show');
+    }
+
+    // تابع محاسبه واحدهای انسولین برای اطفال
+    function calculatePediatricDrug() {
+        const volumeCC = parseFloat(document.getElementById('volumeCC').value);
+
+        // بررسی مقدار ورودی
+        if (isNaN(volumeCC)) {
+            document.getElementById('pediatricDrugResult').innerText = "لطفاً حجم را به درستی وارد کنید.";
+            return;
+        }
+
+        // محاسبه واحدهای انسولین (هر ۰.۰۲ سی‌سی = ۱ واحد انسولین)
+        const insulinUnits = (volumeCC / 0.02);
+        const resultText = `واحدهای انسولین: ${insulinUnits.toFixed(2)}`;
+        document.getElementById('pediatricDrugResult').innerText = resultText;
+        document.getElementById('pediatricDrugResult').classList.add('show');
+    }
+
+    // تابع گزارش خطا به اینستاگرام
+    function reportError() {
+        const errorMessage = prompt("لطفاً مشکل خود را توضیح دهید:");
+        if (errorMessage) {
+            window.open(`https://www.instagram.com/_tavakol`, '_blank');
+        }
+    }
+
+    // تابع چاپ بخش فعال
+    function printActiveSection() {
+        const activeSection = document.querySelector('.accordion-content.show');
+        if (activeSection) {
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>چاپ</title>');
+            printWindow.document.write('<style>');
+            printWindow.document.write(`
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    direction: rtl;
+                    text-align: right;
+                    padding: 20px;
+                }
+                .result {
+                    margin-top: 20px;
+                    padding: 15px;
+                    background-color: #f4f4f4;
+                    border-radius: 5px;
+                    font-size: 16px;
+                    color: #333;
+                    text-align: center;
+                }
+                label {
+                    font-weight: bold;
+                }
+                input, select {
+                    width: 100%;
+                    padding: 10px;
+                    margin-bottom: 20px;
+                    border: 1px solid #444;
+                    border-radius: 5px;
+                    font-size: 14px;
+                    box-sizing: border-box;
+                }
+            `);
+            printWindow.document.write('</style></head><body>');
+            printWindow.document.write(activeSection.innerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        } else {
+            alert("لطفاً بخشی را برای چاپ انتخاب کنید.");
+        }
+    }
+</script>
+
+</body>
+</html>
