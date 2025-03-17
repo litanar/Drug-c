@@ -265,7 +265,7 @@
             color: #34b7f1; /* رنگ SMS */
         }
 
-        /* استایل بخش استخدام با نرس پلاس */
+        /* استایل بخش پرستار پلاس */
         .nurse-plus-section {
             text-align: center;
             margin-top: 30px;
@@ -275,7 +275,7 @@
         }
 
         .nurse-plus-section p {
-            font-size: 16px;
+            font-size: 14px; /* کوچک‌تر کردن فونت */
             margin-bottom: 15px;
             color: #fff;
         }
@@ -298,6 +298,48 @@
 
         .nurse-plus-section button:hover {
             background-color: #27ae60; /* سبز تیره */
+        }
+
+        /* استایل دکمه ارتباط با ما */
+        .contact-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .contact-button a {
+            text-decoration: none;
+            color: white;
+            font-size: 14px; /* کاهش سایز فونت */
+            background-color: #e67e22; /* نارنجی */
+            padding: 8px 16px; /* کاهش پدینگ */
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: inline-flex; /* برای قرار دادن آیکون و متن در یک خط */
+            align-items: center; /* وسط‌چین عمودی */
+            justify-content: center; /* وسط‌چین افقی */
+            width: 140px; /* عرض باکس */
+            height: 40px; /* ارتفاع باکس */
+        }
+
+        .contact-button a:hover {
+            background-color: #d35400; /* نارنجی تیره */
+        }
+
+        .contact-button a i {
+            font-size: 16px; /* اندازه آیکون */
+            margin-right: 8px; /* فاصله بین آیکون و متن */
+        }
+
+        /* استایل زیرنویس ساعت و تاریخ */
+        .footer-info {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 12px; /* فونت ریز */
+            color: #888;
+        }
+
+        .light-theme .footer-info {
+            color: #666;
         }
     </style>
 </head>
@@ -368,7 +410,7 @@
         <label for="fluidVolume">حجم سرم (میلی‌لیتر):</label>
         <input type="number" id="fluidVolume" placeholder="حجم سرم را وارد کنید">
 
-        <!-- زمان تزریق -->
+        <!-- زمان تزری�� -->
         <label for="infusionTime">زمان تزریق (ساعت):</label>
         <input type="number" id="infusionTime" placeholder="زمان تزریق را وارد کنید">
 
@@ -447,21 +489,26 @@
         </div>
     </div>
 
-    <!-- دکمه گزارش خطا -->
-    <button onclick="reportError()" style="margin-top: 20px;">گزارش خطا</button>
-
-    <!-- بخش استخدام با نرس پلاس -->
+    <!-- بخش پرستار پلاس -->
     <div class="nurse-plus-section">
-        <p>همین حالا با اپلیکیشن نرس پلاس استخدام شو!</p>
+        <p>همین حالا با اپلیکیشن پرستار پلاس استخدام شو!</p>
         <a href="http://cafebazaar.ir/app/?id=app.nurse.plus&ref=share" target="_blank">
             <button>Install</button>
         </a>
     </div>
+
+    <!-- دکمه ارتباط با ما -->
+    <div class="contact-button">
+        <a href="https://www.instagram.com/_tavakol" target="_blank">
+            <i class="fab fa-instagram"></i> Contact Us
+        </a>
+    </div>
 </div>
 
-<!-- نویسنده کد -->
+<!-- نویسنده کد و ساعت و تاریخ -->
 <footer>
-    Code by: Tavakol
+    <div>Code by: Tavakol</div>
+    <div class="footer-info" id="datetime"></div>
 </footer>
 
 <script>
@@ -578,11 +625,6 @@
         window.lastCalculationResult = resultText;
     }
 
-    // تابع گزارش خطا
-    function reportError() {
-        alert("در صورت هرگونه سوال، مشکل و پیشنهاد به آی‌دی زیر در اینستاگرام پیام دهید: Tavakol_");
-    }
-
     // توابع اشتراک‌گذاری
     function shareOnWhatsApp() {
         const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
@@ -613,7 +655,19 @@
         const url = `sms:?body=${encodeURIComponent(result)}`;
         window.location.href = url;
     }
+
+    // تابع نمایش ساعت و تاریخ
+    function updateDateTime() {
+        const now = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        const datetime = now.toLocaleDateString('fa-IR', options);
+        document.getElementById('datetime').innerText = datetime;
+    }
+
+    // به‌روزرسانی ساعت و تاریخ هر ثانیه
+    setInterval(updateDateTime, 1000);
+    updateDateTime(); // فراخوانی اولیه
 </script>
 
 </body>
-</html>
+    </html>
