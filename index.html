@@ -8,6 +8,8 @@
     <link href="https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan.css" rel="stylesheet">
     <!-- اضافه کردن آیکون‌ها -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- اضافه کردن manifest.json -->
+    <link rel="manifest" href="/manifest.json">
     <style>
         /* تنظیمات کلی */
         body {
@@ -341,6 +343,32 @@
         .light-theme .footer-info {
             color: #666;
         }
+
+        /* استایل دکمه خانه */
+        .home-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .home-button:hover {
+            transform: translateX(-50%) scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -350,6 +378,11 @@
 
 <!-- دکمه تغییر زبان -->
 <button id="languageToggle" onclick="toggleLanguage()">En</button>
+
+<!-- دکمه خانه -->
+<button id="addToHomeScreen" class="home-button" onclick="addToHomeScreen()">
+    <i class="fas fa-home"></i>
+</button>
 
 <div class="container">
     <!-- کشوی محاسبات دارویی -->
@@ -410,7 +443,7 @@
         <label for="fluidVolume">حجم سرم (میلی‌لیتر):</label>
         <input type="number" id="fluidVolume" placeholder="حجم سرم را وارد کنید">
 
-        <!-- زمان تزری�� -->
+        <!-- زمان تزریق -->
         <label for="infusionTime">زمان تزریق (ساعت):</label>
         <input type="number" id="infusionTime" placeholder="زمان تزریق را وارد کنید">
 
@@ -667,7 +700,36 @@
     // به‌روزرسانی ساعت و تاریخ هر ثانیه
     setInterval(updateDateTime, 1000);
     updateDateTime(); // فراخوانی اولیه
+
+    // تابع افزودن به صفحه اصلی
+    function addToHomeScreen() {
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            alert('اپلیکیشن شما قبلاً نصب شده است.');
+            return;
+        }
+
+        if (window.deferredPrompt) {
+            window.deferredPrompt.prompt();
+            window.deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the A2HS prompt');
+                } else {
+                    console.log('User dismissed the A2HS prompt');
+                }
+                window.deferredPrompt = null;
+            });
+        } else {
+            alert('مرورگر شما از این قابلیت پشتیبانی نمی‌کند.');
+        }
+    }
+
+    // رویداد beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        window.deferredPrompt = event;
+        document.getElementById('addToHomeScreen').style.display = 'block';
+    });
 </script>
 
 </body>
-    </html>
+            </html>
