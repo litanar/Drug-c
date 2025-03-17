@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>محاسبات دارویی، سرم و میکروست</title>
+    <!-- اضافه کردن فونت BYekan -->
+    <link href="https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan.css" rel="stylesheet">
+    <!-- اضافه کردن آیکون‌ها -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* تنظیمات کلی */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Yekan', Tahoma, Geneva, Verdana, sans-serif;
             direction: rtl;
             text-align: right;
             background-color: #1a1a1a; /* پس‌زمینه تیره */
@@ -83,11 +87,12 @@
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         button:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
         }
 
         .result {
@@ -112,7 +117,7 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important; /* اطمینان از مخفی شدن */
         }
 
         .accordion {
@@ -174,27 +179,137 @@
         /* دکمه تغییر تم */
         #themeToggle {
             position: fixed;
-            top: 10px;
-            left: 10px;
-            padding: 10px;
+            bottom: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
             background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 50%;
             cursor: pointer;
             z-index: 1000;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        #themeToggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* دکمه تغییر زبان */
+        #languageToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        #languageToggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* استایل بخش اشتراک‌گذاری */
+        .share-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .share-icons a {
+            text-decoration: none;
+            color: white;
+            font-size: 24px;
+            transition: transform 0.2s ease;
+        }
+
+        .share-icons a:hover {
+            transform: scale(1.2);
+        }
+
+        .share-icons .whatsapp {
+            color: #25d366; /* رنگ واتس‌آپ */
+        }
+
+        .share-icons .instagram {
+            color: #e4405f; /* رنگ اینستاگرام */
+        }
+
+        .share-icons .telegram {
+            color: #0088cc; /* رنگ تلگرام */
+        }
+
+        .share-icons .twitter {
+            color: #1da1f2; /* رنگ توییتر */
+        }
+
+        .share-icons .sms {
+            color: #34b7f1; /* رنگ SMS */
+        }
+
+        /* استایل بخش استخدام با نرس پلاس */
+        .nurse-plus-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #34495e;
+            border-radius: 10px;
+        }
+
+        .nurse-plus-section p {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .nurse-plus-section a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .nurse-plus-section button {
+            background-color: #2ecc71; /* سبز */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nurse-plus-section button:hover {
+            background-color: #27ae60; /* سبز تیره */
         }
     </style>
 </head>
 <body>
 
 <!-- دکمه تغییر تم -->
-<button id="themeToggle" onclick="toggleTheme()">Light Mode</button>
+<button id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+
+<!-- دکمه تغییر زبان -->
+<button id="languageToggle" onclick="toggleLanguage()">En</button>
 
 <div class="container">
-    <!-- تاریخ و ساعت -->
-    <div id="datetime" style="text-align: center; margin-bottom: 20px; font-size: 18px;"></div>
-
     <!-- کشوی محاسبات دارویی -->
     <button class="accordion" id="drugCalculationBtn" onclick="toggleAccordion('drugCalculation')">محاسبات دارویی</button>
     <div class="accordion-content" id="drugCalculation">
@@ -218,8 +333,8 @@
         <div style="display: flex; gap: 10px;">
             <input type="number" id="prescribedDose" placeholder="دوز تجویزی را وارد کنید">
             <select id="prescribedDoseUnit" onchange="toggleWeightInput()">
-                <option value="mcg/kg/min">mcg/kg/min</option>
                 <option value="mg/h">mg/h</option>
+                <option value="mcg/kg/min">mcg/kg/min</option>
                 <option value="mcg/min">mcg/min</option>
                 <option value="mcg/h">mcg/h</option>
                 <option value="U/h">U/h</option>
@@ -235,6 +350,15 @@
         <button onclick="calculateDrug()">محاسبه دارو</button>
 
         <div class="result" id="drugResult"></div>
+
+        <!-- بخش اشتراک‌گذاری -->
+        <div class="share-icons hidden" id="drugShareIcons">
+            <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+        </div>
     </div>
 
     <!-- کشوی محاسبات سرم -->
@@ -262,6 +386,15 @@
         <button onclick="calculateFluid()">محاسبه سرم</button>
 
         <div class="result" id="fluidResult"></div>
+
+        <!-- بخش اشتراک‌گذاری -->
+        <div class="share-icons hidden" id="fluidShareIcons">
+            <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+        </div>
     </div>
 
     <!-- کشوی محاسبات میکروست -->
@@ -282,25 +415,48 @@
         <button onclick="calculateMicroset()">محاسبه میکروست</button>
 
         <div class="result" id="microsetResult"></div>
+
+        <!-- بخش اشتراک‌گذاری -->
+        <div class="share-icons hidden" id="microsetShareIcons">
+            <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+        </div>
     </div>
 
     <!-- کشوی محاسبات دارویی اطفال -->
     <button class="accordion" id="pediatricDrugCalculationBtn" onclick="toggleAccordion('pediatricDrugCalculation')">محاسبات دارویی اطفال</button>
     <div class="accordion-content" id="pediatricDrugCalculation">
-        <!-- حجم بر حسب ��ی‌سی -->
+        <!-- حجم بر حسب سی‌سی -->
         <label for="volumeCC">حجم بر حسب سی‌سی:</label>
         <input type="number" id="volumeCC" placeholder="حجم را وارد کنید (مثال: 0.175)">
 
         <button onclick="calculatePediatricDrug()">محاسبه واحدهای انسولین</button>
 
         <div class="result" id="pediatricDrugResult"></div>
-    </div>
 
-    <!-- دکمه چاپ -->
-    <button onclick="printActiveSection()" style="margin-top: 20px;">چاپ صفحه</button>
+        <!-- بخش اشتراک‌گذاری -->
+        <div class="share-icons hidden" id="pediatricShareIcons">
+            <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+        </div>
+    </div>
 
     <!-- دکمه گزارش خطا -->
     <button onclick="reportError()" style="margin-top: 20px;">گزارش خطا</button>
+
+    <!-- بخش استخدام با نرس پلاس -->
+    <div class="nurse-plus-section">
+        <p>همین حالا با اپلیکیشن نرس پلاس استخدام شو!</p>
+        <a href="http://cafebazaar.ir/app/?id=app.nurse.plus&ref=share" target="_blank">
+            <button>Install</button>
+        </a>
+    </div>
 </div>
 
 <!-- نویسنده کد -->
@@ -309,23 +465,36 @@
 </footer>
 
 <script>
-    // تابع برای نمایش تاریخ و ساعت
-    function updateDateTime() {
-        const now = new Date();
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-        document.getElementById('datetime').innerText = now.toLocaleDateString('fa-IR', options);
-    }
-    setInterval(updateDateTime, 1000);
-
     // تابع تغییر تم
     function toggleTheme() {
         const body = document.body;
         body.classList.toggle('light-theme');
         const themeToggle = document.getElementById('themeToggle');
         if (body.classList.contains('light-theme')) {
-            themeToggle.innerText = 'Dark Mode';
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
         } else {
-            themeToggle.innerText = 'Light Mode';
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+    }
+
+    // تابع تغییر زبان
+    function toggleLanguage() {
+        const body = document.body;
+        const isEnglish = body.classList.toggle('english');
+
+        // تغییر متن‌ها به انگلیسی
+        if (isEnglish) {
+            document.getElementById('drugCalculationBtn').innerText = "Drug Calculations";
+            document.getElementById('fluidCalculationBtn').innerText = "Fluid Calculations";
+            document.getElementById('microsetCalculationBtn').innerText = "Microset Calculations";
+            document.getElementById('pediatricDrugCalculationBtn').innerText = "Pediatric Drug Calculations";
+            document.querySelector('footer').innerText = "Code by: Tavakol";
+        } else {
+            document.getElementById('drugCalculationBtn').innerText = "محاسبات دارویی";
+            document.getElementById('fluidCalculationBtn').innerText = "محاسبات سرم";
+            document.getElementById('microsetCalculationBtn').innerText = "محاسبات میکروست";
+            document.getElementById('pediatricDrugCalculationBtn').innerText = "محاسبات دارویی اطفال";
+            document.querySelector('footer').innerText = "Code by: Tavakol";
         }
     }
 
@@ -345,11 +514,6 @@
             weightInput.classList.add('hidden');
         }
     }
-
-    // فراخوانی تابع هنگام بارگذاری صفحه
-    window.onload = function() {
-        toggleWeightInput(); // بررسی اولیه برای نمایش باکس وزن
-    };
 
     // تابع محاسبه دارو
     function calculateDrug() {
@@ -406,136 +570,48 @@
         const resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} cc/h`;
         document.getElementById('drugResult').innerText = resultText;
         document.getElementById('drugResult').classList.add('show');
+
+        // نمایش ایکون‌های اشتراک‌گذاری
+        document.getElementById('drugShareIcons').classList.remove('hidden');
+
+        // ذخیره نتیجه برای اشتراک‌گذاری
+        window.lastCalculationResult = resultText;
     }
 
-    // تابع محاسبه سرم
-    function calculateFluid() {
-        const fluidVolume = parseFloat(document.getElementById('fluidVolume').value);
-        const infusionTime = parseFloat(document.getElementById('infusionTime').value);
-        const dripSet = parseFloat(document.getElementById('dripSet').value);
-        const fluidDropsPerMinute = parseFloat(document.getElementById('fluidDropsPerMinute').value);
-
-        if (isNaN(fluidVolume) && isNaN(infusionTime) && isNaN(fluidDropsPerMinute)) {
-            document.getElementById('fluidResult').innerText = "لطفاً حداقل حجم سرم، زمان تزریق یا تعداد قطرات بر دقیقه را وارد کنید.";
-            return;
-        }
-
-        let resultText = '';
-        if (!isNaN(fluidDropsPerMinute)) {
-            if (!isNaN(fluidVolume)) {
-                const infusionTime = (fluidVolume * dripSet) / (fluidDropsPerMinute * 60);
-                resultText = `زمان تزریق: ${infusionTime.toFixed(2)} ساعت`;
-            } else if (!isNaN(infusionTime)) {
-                const volume = (fluidDropsPerMinute * infusionTime * 60) / dripSet;
-                resultText = `حجم سرم: ${volume.toFixed(2)} میلی‌لیتر`;
-            }
-        } else {
-            const dropsPerMinute = (fluidVolume * dripSet) / (infusionTime * 60);
-            resultText = `تعداد قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
-        }
-
-        document.getElementById('fluidResult').innerText = resultText;
-        document.getElementById('fluidResult').classList.add('show');
-    }
-
-    // تابع محاسبه میکروست
-    function calculateMicroset() {
-        const microsetVolume = parseFloat(document.getElementById('microsetVolume').value);
-        const microsetInfusionTime = parseFloat(document.getElementById('microsetInfusionTime').value);
-        const dropsPerMinute = parseFloat(document.getElementById('dropsPerMinute').value);
-
-        if (isNaN(microsetVolume) && isNaN(microsetInfusionTime)) {
-            document.getElementById('microsetResult').innerText = "لطفاً حداقل حجم میکروست یا زمان تزریق را وارد کنید.";
-            return;
-        }
-
-        let resultText = '';
-        if (!isNaN(dropsPerMinute)) {
-            if (!isNaN(microsetVolume)) {
-                const infusionTime = (microsetVolume * 60) / (dropsPerMinute * 60);
-                resultText = `زمان تزریق: ${infusionTime.toFixed(2)} ساعت`;
-            } else if (!isNaN(microsetInfusionTime)) {
-                const volume = (dropsPerMinute * microsetInfusionTime * 60) / 60;
-                resultText = `حجم میکروست: ${volume.toFixed(2)} میلی‌لیتر`;
-            }
-        } else {
-            const dropsPerMinute = (microsetVolume * 60) / (microsetInfusionTime * 60);
-            resultText = `تعداد قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
-        }
-
-        document.getElementById('microsetResult').innerText = resultText;
-        document.getElementById('microsetResult').classList.add('show');
-    }
-
-    // تابع محاسبه واحدهای انسولین برای اطفال
-    function calculatePediatricDrug() {
-        const volumeCC = parseFloat(document.getElementById('volumeCC').value);
-
-        // بررسی مقدار ورودی
-        if (isNaN(volumeCC)) {
-            document.getElementById('pediatricDrugResult').innerText = "لطفاً حجم را به درستی وارد کنید.";
-            return;
-        }
-
-        // محاسبه واحدهای انسولین (هر ۰.۰۲ سی‌سی = ۱ واحد انسولین)
-        const insulinUnits = (volumeCC / 0.02);
-        const resultText = `واحدهای انسولین: ${insulinUnits.toFixed(2)}`;
-        document.getElementById('pediatricDrugResult').innerText = resultText;
-        document.getElementById('pediatricDrugResult').classList.add('show');
-    }
-
-    // تابع گزارش خطا به اینستاگرام
+    // تابع گزارش خطا
     function reportError() {
-        const errorMessage = prompt("لطفاً مشکل خود را توضیح دهید:");
-        if (errorMessage) {
-            window.open(`https://www.instagram.com/_tavakol`, '_blank');
-        }
+        alert("در صورت هرگونه سوال، مشکل و پیشنهاد به آی‌دی زیر در اینستاگرام پیام دهید: Tavakol_");
     }
 
-    // تابع چاپ بخش فعال
-    function printActiveSection() {
-        const activeSection = document.querySelector('.accordion-content.show');
-        if (activeSection) {
-            const printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>چاپ</title>');
-            printWindow.document.write('<style>');
-            printWindow.document.write(`
-                body {
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    direction: rtl;
-                    text-align: right;
-                    padding: 20px;
-                }
-                .result {
-                    margin-top: 20px;
-                    padding: 15px;
-                    background-color: #f4f4f4;
-                    border-radius: 5px;
-                    font-size: 16px;
-                    color: #333;
-                    text-align: center;
-                }
-                label {
-                    font-weight: bold;
-                }
-                input, select {
-                    width: 100%;
-                    padding: 10px;
-                    margin-bottom: 20px;
-                    border: 1px solid #444;
-                    border-radius: 5px;
-                    font-size: 14px;
-                    box-sizing: border-box;
-                }
-            `);
-            printWindow.document.write('</style></head><body>');
-            printWindow.document.write(activeSection.innerHTML);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.print();
-        } else {
-            alert("لطفاً بخشی را برای چاپ انتخاب کنید.");
-        }
+    // توابع اشتراک‌گذاری
+    function shareOnWhatsApp() {
+        const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(result)}`;
+        window.open(url, '_blank');
+    }
+
+    function shareOnInstagram() {
+        const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        const url = `https://www.instagram.com/direct/new/?text=${encodeURIComponent(result)}`;
+        window.open(url, '_blank');
+    }
+
+    function shareOnTelegram() {
+        const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        const url = `https://telegram.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(result)}`;
+        window.open(url, '_blank');
+    }
+
+    function shareOnTwitter() {
+        const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(result)}`;
+        window.open(url, '_blank');
+    }
+
+    function shareViaSMS() {
+        const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        const url = `sms:?body=${encodeURIComponent(result)}`;
+        window.location.href = url;
     }
 </script>
 
