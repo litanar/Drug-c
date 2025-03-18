@@ -144,6 +144,9 @@
         #pediatricDrugCalculationBtn {
             background-color: #2ecc71; /* سبز */
         }
+        #percentageDrugCalculationBtn {
+            background-color: #e74c3c; /* قرمز */
+        }
         footer {
             text-align: center;
             margin-top: 20px;
@@ -376,6 +379,26 @@
                 <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
             </div>
         </div>
+        <!-- کشوی محاسبات داروهای درصدی -->
+        <button class="accordion" id="percentageDrugCalculationBtn" onclick="toggleAccordion('percentageDrugCalculation')">محاسبات داروهای درصدی</button>
+        <div class="accordion-content" id="percentageDrugCalculation">
+            <!-- درصد دارو -->
+            <label for="drugPercentage">درصد دارو:</label>
+            <input type="number" id="drugPercentage" placeholder="درصد دارو را وارد کنید (مثال: 1 برای ۱٪)">
+            <!-- دوز مورد نیاز -->
+            <label for="requiredDose">دوز مورد نیاز (میلی‌گرم):</label>
+            <input type="number" id="requiredDose" placeholder="دوز مورد نیاز را وارد کنید">
+            <button onclick="calculatePercentageDrug()">محاسبه سی‌سی مورد نیاز</button>
+            <div class="result" id="percentageDrugResult"></div>
+            <!-- بخش اشتراک‌گذاری -->
+            <div class="share-icons hidden" id="percentageDrugShareIcons">
+                <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+                <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+            </div>
+        </div>
         <!-- کشوی محاسبات سرم -->
         <button class="accordion" id="fluidCalculationBtn" onclick="toggleAccordion('fluidCalculation')">محاسبات سرم</button>
         <div class="accordion-content" id="fluidCalculation">
@@ -487,12 +510,14 @@
                 document.getElementById('fluidCalculationBtn').innerText = "Fluid Calculations";
                 document.getElementById('microsetCalculationBtn').innerText = "Microset Calculations";
                 document.getElementById('pediatricDrugCalculationBtn').innerText = "Pediatric Drug Calculations";
+                document.getElementById('percentageDrugCalculationBtn').innerText = "Percentage Drug Calculations";
                 document.querySelector('footer').innerText = "Code by: Tavakol";
             } else {
                 document.getElementById('drugCalculationBtn').innerText = "محاسبات دارویی";
                 document.getElementById('fluidCalculationBtn').innerText = "محاسبات سرم";
                 document.getElementById('microsetCalculationBtn').innerText = "محاسبات میکروست";
                 document.getElementById('pediatricDrugCalculationBtn').innerText = "محاسبات دارویی اطفال";
+                document.getElementById('percentageDrugCalculationBtn').innerText = "محاسبات داروهای درصدی";
                 document.querySelector('footer').innerText = "Code by: Tavakol";
             }
         }
@@ -572,6 +597,32 @@
 
             // نمایش ایکون‌های اشتراک‌گذاری
             document.getElementById('drugShareIcons').classList.remove('hidden');
+
+            // ذخیره نتیجه برای اشتراک‌گذاری
+            window.lastCalculationResult = resultText;
+        }
+
+        // تابع محاسبه داروهای درصدی
+        function calculatePercentageDrug() {
+            const drugPercentage = parseFloat(document.getElementById('drugPercentage').value);
+            const requiredDose = parseFloat(document.getElementById('requiredDose').value);
+
+            // بررسی مقادیر ورودی
+            if (isNaN(drugPercentage) || isNaN(requiredDose)) {
+                document.getElementById('percentageDrugResult').innerText = "لطفاً تمام مقادیر را به درستی وارد کنید.";
+                return;
+            }
+
+            // محاسبه سی‌سی مورد نیاز
+            const ccNeeded = (requiredDose / (drugPercentage * 10)).toFixed(2);
+
+            // نمایش نتیجه
+            const resultText = `سی‌سی مورد نیاز: ${ccNeeded} سی‌سی`;
+            document.getElementById('percentageDrugResult').innerText = resultText;
+            document.getElementById('percentageDrugResult').classList.add('show');
+
+            // نمایش ایکون‌های اشتراک‌گذاری
+            document.getElementById('percentageDrugShareIcons').classList.remove('hidden');
 
             // ذخیره نتیجه برای اشتراک‌گذاری
             window.lastCalculationResult = resultText;
@@ -750,4 +801,4 @@
         });
     </script>
 </body>
-    </html>
+                        </html>
