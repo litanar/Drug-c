@@ -365,7 +365,7 @@
             </div>
             <!-- وزن (فقط برای دوزهای وابسته به وزن) -->
             <div id="weightInput" class="hidden">
-                <label for="weight">وزن بیمار (کیلوگرم):</label>
+                <label for="weight">وزن بیمار (کیلو��رم):</label>
                 <input type="number" id="weight" placeholder="وزن بیمار را وارد کنید">
             </div>
             <button onclick="calculateDrug()">محاسبه دارو</button>
@@ -411,12 +411,9 @@
             <!-- نوع ست سرم -->
             <label for="dripSet">نوع ست سرم:</label>
             <select id="dripSet">
-                <option value="10">۱۰ قطره بر میلی‌لیتر</option>
+                <option value="15">۱۵ قطره بر میلی‌لیتر</option>
                 <option value="20">۲۰ قطره بر میلی‌لیتر</option>
             </select>
-            <!-- تعداد قطرات بر دقیقه -->
-            <label for="fluidDropsPerMinute">تعداد قطرات بر دقیقه (gtt/min):</label>
-            <input type="number" id="fluidDropsPerMinute" placeholder="تعداد قطرات بر دقیقه را وارد کنید">
             <button onclick="calculateFluid()">محاسبه سرم</button>
             <div class="result" id="fluidResult"></div>
             <!-- بخش اشتراک‌گذاری -->
@@ -437,9 +434,6 @@
             <!-- زمان تزریق -->
             <label for="microsetInfusionTime">زمان تزریق (ساعت):</label>
             <input type="number" id="microsetInfusionTime" placeholder="زمان تزریق را وارد کنید">
-            <!-- تعداد قطرات بر دقیقه -->
-            <label for="dropsPerMinute">تعداد قطرات بر دقیقه (gtt/min):</label>
-            <input type="number" id="dropsPerMinute" placeholder="تعداد قطرات بر دقیقه را وارد کنید">
             <button onclick="calculateMicroset()">محاسبه میکروست</button>
             <div class="result" id="microsetResult"></div>
             <!-- بخش اشتراک‌گذاری -->
@@ -499,7 +493,6 @@
                 themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
             }
         }
-
         // تابع تغییر زبان
         function toggleLanguage() {
             const body = document.body;
@@ -521,13 +514,11 @@
                 document.querySelector('footer').innerText = "Code by: Tavakol";
             }
         }
-
         // تابع برای باز و بسته کردن کشوها
         function toggleAccordion(id) {
             const content = document.getElementById(id);
             content.classList.toggle('show');
         }
-
         // تابع برای نمایش یا مخفی کردن باکس وزن
         function toggleWeightInput() {
             const prescribedDoseUnit = document.getElementById('prescribedDoseUnit').value;
@@ -538,7 +529,6 @@
                 weightInput.classList.add('hidden');
             }
         }
-
         // تابع محاسبه دارو
         function calculateDrug() {
             const drugDose = parseFloat(document.getElementById('drugDose').value);
@@ -547,19 +537,16 @@
             const prescribedDose = parseFloat(document.getElementById('prescribedDose').value);
             const prescribedDoseUnit = document.getElementById('prescribedDoseUnit').value;
             const weight = parseFloat(document.getElementById('weight').value);
-
             // بررسی مقادیر ورودی
             if (isNaN(drugDose) || isNaN(syringeVolume) || isNaN(prescribedDose)) {
                 document.getElementById('drugResult').innerText = "لطفاً تمام مقادیر را به درستی وارد کنید.";
                 return;
             }
-
             // تبدیل واحد دوز دارو به میلی‌گرم یا واحد (U)
             let drugDoseMgOrU = drugDose;
             if (drugDoseUnit === 'mcg') {
                 drugDoseMgOrU = drugDose / 1000; // تبدیل میکروگرم به میلی‌گرم
             }
-
             // محاسبه دوز تجویزی بر حسب میلی‌گرم بر ساعت یا واحد بر ساعت (U/h)
             let prescribedDoseMgOrUPerHour;
             switch (prescribedDoseUnit) {
@@ -586,192 +573,128 @@
                     document.getElementById('drugResult').innerText = "واحد دوز تجویزی نامعتبر است.";
                     return;
             }
-
             // محاسبه نرخ تزریق (cc/h)
             const infusionRate = (prescribedDoseMgOrUPerHour / drugDoseMgOrU) * syringeVolume;
-
             // نمایش نتیجه
             const resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} cc/h`;
             document.getElementById('drugResult').innerText = resultText;
             document.getElementById('drugResult').classList.add('show');
-
             // نمایش ایکون‌های اشتراک‌گذاری
             document.getElementById('drugShareIcons').classList.remove('hidden');
-
             // ذخیره نتیجه برای اشتراک‌گذاری
             window.lastCalculationResult = resultText;
         }
-
         // تابع محاسبه داروهای درصدی
         function calculatePercentageDrug() {
             const drugPercentage = parseFloat(document.getElementById('drugPercentage').value);
             const requiredDose = parseFloat(document.getElementById('requiredDose').value);
-
             // بررسی مقادیر ورودی
             if (isNaN(drugPercentage) || isNaN(requiredDose)) {
                 document.getElementById('percentageDrugResult').innerText = "لطفاً تمام مقادیر را به درستی وارد کنید.";
                 return;
             }
-
             // محاسبه سی‌سی مورد نیاز
             const ccNeeded = (requiredDose / (drugPercentage * 10)).toFixed(2);
-
             // نمایش نتیجه
             const resultText = `سی‌سی مورد نیاز: ${ccNeeded} سی‌سی`;
             document.getElementById('percentageDrugResult').innerText = resultText;
             document.getElementById('percentageDrugResult').classList.add('show');
-
             // نمایش ایکون‌های اشتراک‌گذاری
             document.getElementById('percentageDrugShareIcons').classList.remove('hidden');
-
             // ذخیره نتیجه برای اشتراک‌گذاری
             window.lastCalculationResult = resultText;
         }
-
         // تابع محاسبه سرم
         function calculateFluid() {
             const fluidVolume = parseFloat(document.getElementById('fluidVolume').value);
             const infusionTime = parseFloat(document.getElementById('infusionTime').value);
             const dripSet = parseFloat(document.getElementById('dripSet').value);
-            const fluidDropsPerMinute = parseFloat(document.getElementById('fluidDropsPerMinute').value);
-
-            if (isNaN(fluidVolume) && isNaN(infusionTime) && isNaN(fluidDropsPerMinute)) {
-                document.getElementById('fluidResult').innerText = "لطفاً حداقل حجم سرم، زمان تزریق یا تعداد قطرات بر دقیقه را وارد کنید.";
+            if (isNaN(fluidVolume) || isNaN(infusionTime)) {
+                document.getElementById('fluidResult').innerText = "لطفاً حجم سرم و زمان تزریق را وارد کنید.";
                 return;
             }
-
-            let resultText = '';
-            if (!isNaN(fluidDropsPerMinute)) {
-                if (!isNaN(fluidVolume)) {
-                    const infusionTime = (fluidVolume * dripSet) / (fluidDropsPerMinute * 60);
-                    resultText = `زمان تزریق: ${infusionTime.toFixed(2)} ساعت`;
-                } else if (!isNaN(infusionTime)) {
-                    const volume = (fluidDropsPerMinute * infusionTime * 60) / dripSet;
-                    resultText = `حجم سرم: ${volume.toFixed(2)} میلی‌لیتر`;
-                }
-            } else {
-                const dropsPerMinute = (fluidVolume * dripSet) / (infusionTime * 60);
-                resultText = `تعداد قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
-            }
-
+            // محاسبه تعداد قطرات بر دقیقه
+            const dropsPerMinute = (fluidVolume * dripSet) / (infusionTime * 60);
+            const resultText = `تعداد قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
             document.getElementById('fluidResult').innerText = resultText;
             document.getElementById('fluidResult').classList.add('show');
-
             // ذخیره نتیجه برای اشتراک‌گذاری
             window.lastCalculationResult = resultText;
-
             // نمایش ایکون‌های اشتراک‌گذاری
             document.getElementById('fluidShareIcons').classList.remove('hidden');
         }
-
         // تابع محاسبه میکروست
         function calculateMicroset() {
             const microsetVolume = parseFloat(document.getElementById('microsetVolume').value);
             const microsetInfusionTime = parseFloat(document.getElementById('microsetInfusionTime').value);
-            const dropsPerMinute = parseFloat(document.getElementById('dropsPerMinute').value);
-
-            if (isNaN(microsetVolume) && isNaN(microsetInfusionTime)) {
-                document.getElementById('microsetResult').innerText = "لطفاً حداقل حجم میکروست یا زمان تزریق را وارد کنید.";
+            if (isNaN(microsetVolume) || isNaN(microsetInfusionTime)) {
+                document.getElementById('microsetResult').innerText = "لطفاً حجم میکروست و زمان تزریق را وارد کنید.";
                 return;
             }
-
-            let resultText = '';
-            if (!isNaN(dropsPerMinute)) {
-                if (!isNaN(microsetVolume)) {
-                    const infusionTime = (microsetVolume * 60) / (dropsPerMinute * 60);
-                    resultText = `زمان تزریق: ${infusionTime.toFixed(2)} ساعت`;
-                } else if (!isNaN(microsetInfusionTime)) {
-                    const volume = (dropsPerMinute * microsetInfusionTime * 60) / 60;
-                    resultText = `حجم میکروست: ${volume.toFixed(2)} میلی‌لیتر`;
-                }
-            } else {
-                const dropsPerMinute = (microsetVolume * 60) / (microsetInfusionTime * 60);
-                resultText = `تعداد قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
-            }
-
+            // محاسبه تعداد قطرات بر دقیقه
+            const dropsPerMinute = (microsetVolume * 60) / (microsetInfusionTime * 60);
+            const resultText = `تعداد قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
             document.getElementById('microsetResult').innerText = resultText;
             document.getElementById('microsetResult').classList.add('show');
-
             // ذخیره نتیجه برای اشتراک‌گذاری
             window.lastCalculationResult = resultText;
-
             // نمایش ایکون‌های اشتراک‌گذاری
             document.getElementById('microsetShareIcons').classList.remove('hidden');
         }
-
         // تابع محاسبه واحدهای انسولین برای اطفال
         function calculatePediatricDrug() {
             const volumeCC = parseFloat(document.getElementById('volumeCC').value);
-
             // بررسی مقدار ورودی
             if (isNaN(volumeCC)) {
                 document.getElementById('pediatricDrugResult').innerText = "لطفاً حجم را به درستی وارد کنید.";
                 return;
             }
-
             // محاسبه واحدهای انسولین (هر ۰.۰۲ سی‌سی = ۱ واحد انسولین)
             const insulinUnits = (volumeCC / 0.02);
             const resultText = `واحدهای انسولین: ${insulinUnits.toFixed(2)}`;
             document.getElementById('pediatricDrugResult').innerText = resultText;
             document.getElementById('pediatricDrugResult').classList.add('show');
-
             // ذخیره نتیجه برای اشتراک‌گذاری
             window.lastCalculationResult = resultText;
-
             // نمایش ایکون‌های اشتراک‌گذاری
             document.getElementById('pediatricShareIcons').classList.remove('hidden');
         }
-
         // توابع اشتراک‌گذاری
         function shareOnWhatsApp() {
             const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(result)}`;
             window.open(url, '_blank');
         }
-
         function shareOnInstagram() {
             const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `https://www.instagram.com/direct/new/?text=${encodeURIComponent(result)}`;
             window.open(url, '_blank');
         }
-
         function shareOnTelegram() {
             const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `https://telegram.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(result)}`;
             window.open(url, '_blank');
         }
-
         function shareOnTwitter() {
             const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(result)}`;
             window.open(url, '_blank');
         }
-
         function shareViaSMS() {
             const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `sms:?body=${encodeURIComponent(result)}`;
             window.location.href = url;
         }
-
         // تابع نمایش ساعت و تاریخ
         function updateDateTime() {
             const now = new Date();
-            const options = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
             const datetime = now.toLocaleDateString('fa-IR', options);
             document.getElementById('datetime').innerText = datetime;
         }
-
         // به‌روزرسانی ساعت و تاریخ هر ثانیه
         setInterval(updateDateTime, 1000);
         updateDateTime(); // فراخوانی اولیه
-
         // تابع افزودن به صفحه اصلی
         function addToHomeScreen() {
             if (window.matchMedia('(display-mode: standalone)').matches) {
@@ -792,7 +715,6 @@
                 alert('مرورگر شما از این قابلیت پشتیبانی نمی‌کند.');
             }
         }
-
         // رویداد beforeinstallprompt
         window.addEventListener('beforeinstallprompt', (event) => {
             event.preventDefault();
@@ -801,4 +723,4 @@
         });
     </script>
 </body>
-                        </html>
+                </html>
