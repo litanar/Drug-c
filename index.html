@@ -323,6 +323,30 @@
         .home-button:hover {
             transform: translateX(-50%) scale(1.1);
         }
+        /* استایل رادیو باتن‌ها */
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background-color: #34495e; /* پس‌زمینه خاکستری روشن */
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .radio-group label {
+            font-size: 12px; /* فونت کوچک‌تر */
+            display: flex;
+            align-items: center;
+            color: #fff; /* متن سفید */
+        }
+        .radio-group input[type="radio"] {
+            margin-left: 5px;
+        }
+        .radio-group-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff; /* متن سفید */
+        }
     </style>
 </head>
 <body>
@@ -336,7 +360,7 @@
     </button>
     <div class="container">
         <!-- کشوی محاسبات دارویی -->
-        <button class="accordion" id="drugCalculationBtn" onclick="toggleAccordion('drugCalculation')">محاسبات دارویی</button>
+        <button class="accordion" id="drugCalculationBtn" onclick="toggleAccordion('drugCalculation')">محاسبات دارویی (پمپ و میکروست)</button>
         <div class="accordion-content" id="drugCalculation">
             <!-- دوز دارو -->
             <label for="drugDose">دوز دارو:</label>
@@ -348,9 +372,9 @@
                     <option value="U">U</option>
                 </select>
             </div>
-            <!-- حجم سرنگ -->
-            <label for="syringeVolume">حجم سرنگ (سی‌سی):</label>
-            <input type="number" id="syringeVolume" placeholder="حجم سرنگ را وارد کنید">
+            <!-- حجم سرنگ یا میکروست -->
+            <label for="syringeVolume">حجم سرنگ یا میکروست (سی‌سی):</label>
+            <input type="number" id="syringeVolume" placeholder="حجم سرنگ یا میکروست را وارد کنید">
             <!-- دوز تجویزی -->
             <label for="prescribedDose">دوز تجویزی:</label>
             <div style="display: flex; gap: 10px;">
@@ -365,8 +389,18 @@
             </div>
             <!-- وزن (فقط برای دوزهای وابسته به وزن) -->
             <div id="weightInput" class="hidden">
-                <label for="weight">وزن بیمار (کیلو��رم):</label>
+                <label for="weight">وزن بیمار (کیلوگرم):</label>
                 <input type="number" id="weight" placeholder="وزن بیمار را وارد کنید">
+            </div>
+            <!-- روش تزریق -->
+            <div class="radio-group">
+                <div class="radio-group-title">روش تزریق:</div>
+                <label>
+                    <input type="radio" name="infusionMethod" value="pump" checked> پمپ (cc/h)
+                </label>
+                <label>
+                    <input type="radio" name="infusionMethod" value="microset"> میکروست (60 gtt/min)
+                </label>
             </div>
             <button onclick="calculateDrug()">محاسبه دارو</button>
             <div class="result" id="drugResult"></div>
@@ -436,7 +470,7 @@
             <input type="number" id="microsetInfusionTime" placeholder="زمان تزریق را وارد کنید">
             <button onclick="calculateMicroset()">محاسبه میکروست</button>
             <div class="result" id="microsetResult"></div>
-            <!-- بخش اشتراک‌گذاری -->
+            <!-- بخش اشتراک‌گذ��ری -->
             <div class="share-icons hidden" id="microsetShareIcons">
                 <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
                 <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
@@ -499,14 +533,14 @@
             const isEnglish = body.classList.toggle('english');
             // تغییر متن‌ها به انگلیسی
             if (isEnglish) {
-                document.getElementById('drugCalculationBtn').innerText = "Drug Calculations";
+                document.getElementById('drugCalculationBtn').innerText = "Drug Calculations (Pump and Microset)";
                 document.getElementById('fluidCalculationBtn').innerText = "Fluid Calculations";
                 document.getElementById('microsetCalculationBtn').innerText = "Microset Calculations";
                 document.getElementById('pediatricDrugCalculationBtn').innerText = "Pediatric Drug Calculations";
                 document.getElementById('percentageDrugCalculationBtn').innerText = "Percentage Drug Calculations";
                 document.querySelector('footer').innerText = "Code by: Tavakol";
             } else {
-                document.getElementById('drugCalculationBtn').innerText = "محاسبات دارویی";
+                document.getElementById('drugCalculationBtn').innerText = "محاسبات دارویی (پمپ و میکروست)";
                 document.getElementById('fluidCalculationBtn').innerText = "محاسبات سرم";
                 document.getElementById('microsetCalculationBtn').innerText = "محاسبات میکروست";
                 document.getElementById('pediatricDrugCalculationBtn').innerText = "محاسبات دارویی اطفال";
@@ -537,16 +571,20 @@
             const prescribedDose = parseFloat(document.getElementById('prescribedDose').value);
             const prescribedDoseUnit = document.getElementById('prescribedDoseUnit').value;
             const weight = parseFloat(document.getElementById('weight').value);
+            const infusionMethod = document.querySelector('input[name="infusionMethod"]:checked').value;
+
             // بررسی مقادیر ورودی
             if (isNaN(drugDose) || isNaN(syringeVolume) || isNaN(prescribedDose)) {
                 document.getElementById('drugResult').innerText = "لطفاً تمام مقادیر را به درستی وارد کنید.";
                 return;
             }
+
             // تبدیل واحد دوز دارو به میلی‌گرم یا واحد (U)
             let drugDoseMgOrU = drugDose;
             if (drugDoseUnit === 'mcg') {
                 drugDoseMgOrU = drugDose / 1000; // تبدیل میکروگرم به میلی‌گرم
             }
+
             // محاسبه دوز تجویزی بر حسب میلی‌گرم بر ساعت یا واحد بر ساعت (U/h)
             let prescribedDoseMgOrUPerHour;
             switch (prescribedDoseUnit) {
@@ -573,10 +611,20 @@
                     document.getElementById('drugResult').innerText = "واحد دوز تجویزی نامعتبر است.";
                     return;
             }
-            // محاسبه نرخ تزریق (cc/h)
-            const infusionRate = (prescribedDoseMgOrUPerHour / drugDoseMgOrU) * syringeVolume;
+
+            // محاسبه نرخ تزریق
+            let resultText;
+            if (infusionMethod === 'pump') {
+                // محاسبه نرخ تزریق بر حسب cc/h
+                const infusionRate = (prescribedDoseMgOrUPerHour / drugDoseMgOrU) * syringeVolume;
+                resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} cc/h (روش تزریق: پمپ)`;
+            } else {
+                // محاسبه نرخ تزریق بر حسب gtt/min
+                const infusionRate = (prescribedDoseMgOrUPerHour / drugDoseMgOrU) * syringeVolume;
+                resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} gtt/min (روش تزریق: میکروست)`;
+            }
+
             // نمایش نتیجه
-            const resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} cc/h`;
             document.getElementById('drugResult').innerText = resultText;
             document.getElementById('drugResult').classList.add('show');
             // نمایش ایکون‌های اشتراک‌گذاری
@@ -723,4 +771,4 @@
         });
     </script>
 </body>
-                </html>
+    </html>
