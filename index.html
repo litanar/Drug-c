@@ -147,6 +147,9 @@
         #percentageDrugCalculationBtn {
             background-color: #e74c3c; /* قرمز */
         }
+        #mEqToMgBtn {
+            background-color: #4a5568; /* خاکستری تیره (سرمه‌ای) */
+        }
         footer {
             text-align: center;
             margin-top: 20px;
@@ -356,7 +359,7 @@
     <button id="languageToggle" onclick="toggleLanguage()">En</button>
     <!-- دکمه خانه -->
     <button id="addToHomeScreen" class="home-button" onclick="addToHomeScreen()">
-        <i class="fas fa-home"></i>
+        <i class="fas fa-download"></i> <!-- تغییر ایکون به نصب -->
     </button>
     <div class="container">
         <!-- کشوی محاسبات دارویی -->
@@ -470,7 +473,7 @@
             <input type="number" id="microsetInfusionTime" placeholder="زمان تزریق را وارد کنید">
             <button onclick="calculateMicroset()">محاسبه میکروست</button>
             <div class="result" id="microsetResult"></div>
-            <!-- بخش اشتراک‌گذ��ری -->
+            <!-- بخش اشتراک‌گذاری -->
             <div class="share-icons hidden" id="microsetShareIcons">
                 <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
                 <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
@@ -489,6 +492,35 @@
             <div class="result" id="pediatricDrugResult"></div>
             <!-- بخش اشتراک‌گذاری -->
             <div class="share-icons hidden" id="pediatricShareIcons">
+                <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+                <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+            </div>
+        </div>
+        <!-- کشوی تبدیل میلی‌اکی‌والان به میلی‌گرم -->
+        <button class="accordion" id="mEqToMgBtn" onclick="toggleAccordion('mEqToMg')">تبدیل میلی‌اکی‌والان به میلی‌گرم</button>
+        <div class="accordion-content" id="mEqToMg">
+            <!-- انتخاب ترکیب -->
+            <label for="compound">ترکیب:</label>
+            <select id="compound" required>
+                <option value="">انتخاب کنید</option>
+                <option value="74.5,1">پتاسیم کلراید (KCl)</option>
+                <option value="58.5,1">سدیم کلرید (NaCl)</option>
+                <option value="84,1">سدیم بی‌کربنات (NaHCO₃)</option>
+                <option value="111,2">کلسیم کلرید (CaCl₂)</option>
+                <option value="120,2">منیزیم سولفات (MgSO₄)</option>
+                <option value="212,1">فسفات پتاسیم (K₃PO₄)</option>
+                <option value="430,2">کلسیم گلوکونات (Ca(C₆H₁₁O₇)₂)</option>
+            </select>
+            <!-- مقدار mEq -->
+            <label for="mEq">مقدار میلی‌اکی‌والان (mEq):</label>
+            <input type="number" id="mEq" step="0.01" required placeholder="مقدار mEq را وارد کنید">
+            <button onclick="calculateMgFromMEq()">محاسبه</button>
+            <div class="result" id="mEqToMgResult"></div>
+            <!-- بخش اشتراک‌گذاری -->
+            <div class="share-icons hidden" id="mEqToMgShareIcons">
                 <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
                 <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
                 <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
@@ -531,22 +563,63 @@
         function toggleLanguage() {
             const body = document.body;
             const isEnglish = body.classList.toggle('english');
-            // تغییر متن‌ها به انگلیسی
-            if (isEnglish) {
-                document.getElementById('drugCalculationBtn').innerText = "Drug Calculations (Pump and Microset)";
-                document.getElementById('fluidCalculationBtn').innerText = "Fluid Calculations";
-                document.getElementById('microsetCalculationBtn').innerText = "Microset Calculations";
-                document.getElementById('pediatricDrugCalculationBtn').innerText = "Pediatric Drug Calculations";
-                document.getElementById('percentageDrugCalculationBtn').innerText = "Percentage Drug Calculations";
-                document.querySelector('footer').innerText = "Code by: Tavakol";
-            } else {
-                document.getElementById('drugCalculationBtn').innerText = "محاسبات دارویی (پمپ و میکروست)";
-                document.getElementById('fluidCalculationBtn').innerText = "محاسبات سرم";
-                document.getElementById('microsetCalculationBtn').innerText = "محاسبات میکروست";
-                document.getElementById('pediatricDrugCalculationBtn').innerText = "محاسبات دارویی اطفال";
-                document.getElementById('percentageDrugCalculationBtn').innerText = "محاسبات داروهای درصدی";
-                document.querySelector('footer').innerText = "Code by: Tavakol";
-            }
+            translatePageToEnglish(isEnglish);
+        }
+        // تابع ترجمه صفحه به انگلیسی
+        function translatePageToEnglish(isEnglish) {
+            const translations = {
+                "محاسبات دارویی (پمپ و میکروست)": "Drug Calculations (Pump and Microset)",
+                "محاسبات سرم": "Fluid Calculations",
+                "محاسبات میکروست": "Microset Calculations",
+                "محاسبات دارویی اطفال": "Pediatric Drug Calculations",
+                "محاسبات داروهای درصدی": "Percentage Drug Calculations",
+                "تبدیل میلی‌اکی‌والان به میلی‌گرم": "Convert mEq to mg",
+                "دوز دارو:": "Drug Dose:",
+                "حجم سرنگ یا میکروست (سی‌سی):": "Syringe or Microset Volume (cc):",
+                "دوز تجویزی:": "Prescribed Dose:",
+                "وزن بیمار (کیلوگرم):": "Patient Weight (kg):",
+                "روش تزریق:": "Infusion Method:",
+                "پمپ (cc/h)": "Pump (cc/h)",
+                "میکروست (60 gtt/min)": "Microset (60 gtt/min)",
+                "محاسبه دارو": "Calculate Drug",
+                "درصد دارو:": "Drug Percentage:",
+                "دوز مورد نیاز (میلی‌گرم):": "Required Dose (mg):",
+                "محاسبه سی‌سی مورد نیاز": "Calculate Required cc",
+                "حجم سرم (میلی‌لیتر):": "Fluid Volume (ml):",
+                "زمان تزریق (ساعت):": "Infusion Time (hours):",
+                "نوع ست سرم:": "Drip Set Type:",
+                "۱۵ قطره بر میلی‌لیتر": "15 drops per ml",
+                "۲۰ قطره بر میلی‌لیتر": "20 drops per ml",
+                "محاسبه سرم": "Calculate Fluid",
+                "حجم میکروست (میلی‌لیتر):": "Microset Volume (ml):",
+                "زمان تزریق (ساعت):": "Infusion Time (hours):",
+                "محاسبه میکروست": "Calculate Microset",
+                "حجم بر حسب سی‌سی:": "Volume in cc:",
+                "محاسبه واحدهای انسولین": "Calculate Insulin Units",
+                "ترکیب:": "Compound:",
+                "مقدار میلی‌اکی‌والان (mEq):": "Milliequivalent (mEq):",
+                "محاسبه": "Calculate",
+                "همین حالا با اپلیکیشن پرستار پلاس استخدام شو!": "Get hired now with the Nurse Plus app!",
+                "Install": "Install",
+                "Contact Us": "Contact Us",
+                "Code by: Tavakol": "Code by: Tavakol"
+            };
+            // ترجمه عناصر صفحه
+            const elements = document.querySelectorAll('button, label, h2, p, a, div, span, footer');
+            elements.forEach(element => {
+                const text = element.innerText.trim();
+                if (translations[text]) {
+                    element.innerText = translations[text];
+                }
+            });
+            // ترجمه placeholderها
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                const placeholder = input.getAttribute('placeholder');
+                if (placeholder && translations[placeholder]) {
+                    input.setAttribute('placeholder', translations[placeholder]);
+                }
+            });
         }
         // تابع برای باز و بسته کردن کشوها
         function toggleAccordion(id) {
@@ -707,6 +780,27 @@
             // نمایش ایکون‌های اشتراک‌گذاری
             document.getElementById('pediatricShareIcons').classList.remove('hidden');
         }
+        // تابع محاسبه میلی‌اکی‌والان به میلی‌گرم
+        function calculateMgFromMEq() {
+            const compound = document.getElementById('compound').value;
+            const mEq = parseFloat(document.getElementById('mEq').value);
+
+            if (!compound || isNaN(mEq)) {
+                document.getElementById('mEqToMgResult').innerText = "لطفاً ترکیب و مقدار mEq را به درستی وارد کنید.";
+                return;
+            }
+
+            const [molarMass, valence] = compound.split(',').map(Number);
+            const mg = mEq * (molarMass / valence);
+
+            const resultText = `${mEq} mEq معادل است با ${mg.toFixed(2)} mg`;
+            document.getElementById('mEqToMgResult').innerText = resultText;
+            document.getElementById('mEqToMgResult').classList.add('show');
+            // نمایش ایکون‌های اشتراک‌گذاری
+            document.getElementById('mEqToMgShareIcons').classList.remove('hidden');
+            // ذخیره نتیجه برای اشتراک‌گذاری
+            window.lastCalculationResult = resultText;
+        }
         // توابع اشتراک‌گذاری
         function shareOnWhatsApp() {
             const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
@@ -760,7 +854,7 @@
                     window.deferredPrompt = null;
                 });
             } else {
-                alert('مرورگر شما از این قابلیت پشتیبانی نمی‌کند.');
+                alert('مرورگر شما از این قابلیت پشتیبانی نمی‌کند. برای نصب از مرورگر کروم استفاده کنید.'); // تغییر پیام خطا
             }
         }
         // رویداد beforeinstallprompt
@@ -771,4 +865,4 @@
         });
     </script>
 </body>
-    </html>
+                                                                      </html>
