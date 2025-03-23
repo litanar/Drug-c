@@ -1,10 +1,12 @@
 const CACHE_NAME = 'my-pwa-cache-v1';
 const ASSETS_TO_CACHE = [
-  '/', // صفحه اصلی
-  '/index.html', // فایل HTML اصلی
-  '/styles.css', // فایل استایل
-  '/script.js', // فایل اسکریپت
-  // سایر فایل‌های استاتیک مثل تصاویر، فونت‌ها و...
+  '/',
+  '/index.html',
+  '/icon-192x192.png',
+  '/icon-512x512.png',
+  '/manifest.json',
+  '/service-worker.js',
+  '/sw.js'
 ];
 
 // نصب Service Worker و کش کردن فایل‌ها
