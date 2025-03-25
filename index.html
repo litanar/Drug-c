@@ -796,6 +796,19 @@
       });
   });
         }
+
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(registration => {
+      console.log('ServiceWorker registration successful');
+      // برای به‌روزرسانی فوری
+      registration.addEventListener('updatefound', () => {
+        registration.installing.postMessage('SKIP_WAITING');
+      });
+    });
+}
+        
     </script>
 </body>
     </html>
