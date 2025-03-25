@@ -1,45 +1,100 @@
-const CACHE_NAME = 'my-pwa-cache-v1';
-const ASSETS_TO_CACHE = [
+// تنظیمات اصلی
+const APP_NAME = 'MedMate'; // نام برنامه
+const CACHE_VERSION = 'v3'; // نسخه کش
+const CACHE_NAME = `${APP_NAME}-${CACHE_VERSION}`;
+const OFFLINE_PAGE = '/index.html';
+
+// فایل‌های ضروری برای کش
+const ESSENTIAL_ASSETS = [
   '/',
   '/index.html',
+  '/manifest.json',
   '/icon-192x192.png',
   '/icon-512x512.png',
-  '/manifest.json',
-  '/service-worker.js',
-  '/sw.js'
+  '/sw.js',
+  '/styles.css',
+  '/app.js'
 ];
 
-// نصب Service Worker و کش کردن فایل‌ها
+// نصب و کش کردن فایل‌ها
 self.addEventListener('install', (event) => {
+  console.log('[Service Worker] Installing...');
+  
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        return cache.addAll(ASSETS_TO_CACHE);
+        console.log('[Service Worker] Caching essential assets');
+        return cache.addAll(ESSENTIAL_ASSETS);
+      })
+      .then(() => {
+        console.log('[Service Worker] Skip waiting activated');
+        return self.skipWaiting();
       })
   );
 });
 
-// فعال کردن Service Worker و حذف کش‌های قدیمی
+// فعال‌سازی و پاک‌سازی کش‌های قدیمی
 self.addEventListener('activate', (event) => {
+  console.log('[Service Worker] Activating...');
+  
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
+          if (cacheName !== CACHE_NAME && cacheName.startsWith(APP_NAME)) {
+            console.log('[Service Worker] Removing old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      console.log('[Service Worker] Claiming clients');
+      return self.clients.claim();
     })
   );
 });
 
-// پاسخ به درخواست‌ها از کش
+// مدیریت درخواست‌ها
 self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  
+  // استراتژی Cache First با Fallback به شبکه
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        return response || fetch(event.request);
-      })
+    caches.match(request).then((response) => {
+      if (response) {
+        console.log(`[Service Worker] Serving from cache: ${request.url}`);
+        return response;
+      }
+      
+      console.log(`[Service Worker] Fetching from network: ${request.url}`);
+      return fetch(request)
+        .then((networkResponse) => {
+          // فقط فایل‌های موفق و از نوع HTTP را کش کنید
+          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+            return networkResponse;
+          }
+          
+          // کلون پاسخ برای کش
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
+          });
+          
+          return networkResponse;
+        })
+        .catch(() => {
+          // Fallback برای حالت آفلاین
+          if (request.headers.get('accept').includes('text/html')) {
+            return caches.match(OFFLINE_PAGE);
+          }
+        });
+    })
   );
+});
+
+// به‌روزرسانی خودکار
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
