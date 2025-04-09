@@ -1,4 +1,4 @@
-const CACHE_NAME = 'medmate-cache-v2' + (new Date()).toISOString().replace(/\D/g,'').slice(0,12);
+const CACHE_NAME = 'medmate-cache-v3' + (new Date()).toISOString().replace(/\D/g,'').slice(0,12);
 const ASSETS = [
   '/',
   '/index.html',
