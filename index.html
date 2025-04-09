@@ -794,19 +794,32 @@
             document.getElementById('addToHomeScreen').style.display = 'block';
         });
 
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => {
-          // نمایش دکمه نصب
-          window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            window.deferredPrompt = e;
-            // نمایش دکمه نصب در UI شما
-          });
+ if ('serviceWorker' in navigator) {
+  // ثبت سرویس ورکر با قابلیت بروزرسانی خودکار
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => {
+      // قابلیت نصب PWA
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+        document.getElementById('addToHomeScreen').style.display = 'block';
+      });
+      
+      // بروزرسانی خودکار هر 1 ساعت
+      setInterval(() => reg.update(), 60 * 60 * 1000);
+      
+      // ارسال پیام برای فعال‌سازی سریع
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'activated') {
+            window.location.reload();
+          }
         });
-    });
-  }
+      });
+    })
+    .catch(err => console.error('خطا در ثبت Service Worker:', err));
+}
     </script>
 </body>
     </html>
