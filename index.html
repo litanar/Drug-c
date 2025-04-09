@@ -794,20 +794,21 @@
             document.getElementById('addToHomeScreen').style.display = 'block';
         });
 
- if ('serviceWorker' in navigator) {
-  // ثبت با پارامتر version برای جلوگیری از کش شدن
-  navigator.serviceWorker.register('/sw.js?version=' + new Date().getTime())
-    .then(reg => {
-      // گوش دادن به پیام‌های بروزرسانی
-      navigator.serviceWorker.addEventListener('message', event => {
-        if (event.data === 'SW_UPDATED') {
-          window.location.reload();
+if ('serviceWorker' in navigator) {
+  // ثبت سرویس ورکر بدون ریلود خودکار
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    // فقط هنگام وجود آپدیت، ریلود کن
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'activated') {
+          if (confirm('نسخه جدید آماده است! می‌خواهید صفحه رفرش شود؟')) {
+            window.location.reload();
+          }
         }
       });
-      
-      // بررسی بروزرسانی‌ها هر 5 دقیقه
-      setInterval(() => reg.update(), 5 * 60 * 1000);
     });
+  });
 }
     </script>
 </body>
