@@ -1,5 +1,5 @@
-const CACHE_NAME = 'my-pwa-cache-v2';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'my-pwa-cache-v3';
+const ASSETS = [
   '/',
   '/index.html',
   '/icon-192x192.png',
@@ -10,9 +10,14 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS_TO_CACHE))
+      .then(cache => cache.addAll(ASSETS))
       .then(() => self.skipWaiting())
   );
+});
+
+// این بخش جدید را اضافه کنید
+self.addEventListener('message', (event) => {
+  if (event.data === 'skipWaiting') self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
