@@ -1,61 +1,62 @@
-const CACHE_NAME = 'my-pwa-cache-v4'; // نسخه را دستی افزایش دهید
+const CACHE_NAME = 'medmate-cache-v2' + (new Date()).toISOString().replace(/\D/g,'').slice(0,12);
 const ASSETS = [
   '/',
   '/index.html',
   '/icon-192x192.png',
   '/icon-512x512.png',
   '/manifest.json'
-  // فایل‌های دیگر...
+  // سایر فایل‌های استاتیک
 ];
 
+// نصب و کش کردن
 self.addEventListener('install', (event) => {
+  self.skipWaiting(); // فعال‌سازی فوری
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Caching assets in:', CACHE_NAME);
-        return cache.addAll(ASSETS);
-      })
+      .then(cache => cache.addAll(ASSETS))
   );
-  self.skipWaiting();
 });
 
+// فعال‌سازی و پاک‌سازی کش قدیم
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
+          if (!cacheName.startsWith('medmate-cache-v')) return caches.delete(cacheName);
+          if (cacheName !== CACHE_NAME) return caches.delete(cacheName);
         })
       );
     })
   );
-  self.clients.claim();
+  self.clients.claim(); // کنترل فوری کلاینت‌ها
 });
 
+// استراتژی fetch
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   
-  // عدم کش کردن درخواست‌های sw.js
-  if (event.request.url.includes('/sw.js')) {
+  // برای فایل‌های دینامیک از شبکه بگیر
+  if (event.request.url.includes('/api/') || 
+      event.request.url.includes('sw.js') || 
+      event.request.url.includes('version=')) {
     return fetch(event.request);
   }
 
   event.respondWith(
     caches.match(event.request)
-      .then(cachedResponse => {
-        return cachedResponse || fetch(event.request)
-          .then(networkResponse => {
-            if (networkResponse && networkResponse.status === 200) {
-              const responseToCache = networkResponse.clone();
-              caches.open(CACHE_NAME)
-                .then(cache => cache.put(event.request, responseToCache));
-            }
-            return networkResponse;
-          })
-          .catch(() => caches.match('/index.html'));
-      })
+      .then(cached => cached || fetchAndCache(event.request))
+      .catch(() => caches.match('/index.html'))
   );
 });
+
+// تابع کمکی برای کش کردن پاسخ‌های شبکه
+function fetchAndCache(request) {
+  return fetch(request).then(response => {
+    if (response && response.status === 200) {
+      const clone = response.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+    }
+    return response;
+  });
+}
