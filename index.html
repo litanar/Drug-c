@@ -795,30 +795,19 @@
         });
 
  if ('serviceWorker' in navigator) {
-  // ثبت سرویس ورکر با قابلیت بروزرسانی خودکار
-  navigator.serviceWorker.register('/sw.js')
+  // ثبت با پارامتر version برای جلوگیری از کش شدن
+  navigator.serviceWorker.register('/sw.js?version=' + new Date().getTime())
     .then(reg => {
-      // قابلیت نصب PWA
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        window.deferredPrompt = e;
-        document.getElementById('addToHomeScreen').style.display = 'block';
+      // گوش دادن به پیام‌های بروزرسانی
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data === 'SW_UPDATED') {
+          window.location.reload();
+        }
       });
       
-      // بروزرسانی خودکار هر 1 ساعت
-      setInterval(() => reg.update(), 60 * 60 * 1000);
-      
-      // ارسال پیام برای فعال‌سازی سریع
-      reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'activated') {
-            window.location.reload();
-          }
-        });
-      });
-    })
-    .catch(err => console.error('خطا در ثبت Service Worker:', err));
+      // بررسی بروزرسانی‌ها هر 5 دقیقه
+      setInterval(() => reg.update(), 5 * 60 * 1000);
+    });
 }
     </script>
 </body>
