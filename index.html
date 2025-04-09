@@ -794,21 +794,26 @@
             document.getElementById('addToHomeScreen').style.display = 'block';
         });
 
+// ثبت سرویس ورکر با کنترل نسخه
 if ('serviceWorker' in navigator) {
-  // ثبت سرویس ورکر بدون ریلود خودکار
-  navigator.serviceWorker.register('/sw.js').then(reg => {
-    // فقط هنگام وجود آپدیت، ریلود کن
-    reg.addEventListener('updatefound', () => {
-      const newWorker = reg.installing;
-      newWorker.addEventListener('statechange', () => {
-        if (newWorker.state === 'activated') {
-          if (confirm('نسخه جدید آماده است! می‌خواهید صفحه رفرش شود؟')) {
+  const version = new Date().getTime();
+  
+  // ثبت با پارامتر version برای جلوگیری از کش
+  navigator.serviceWorker.register(`/sw.js?version=${version}`)
+    .then(reg => {
+      // بررسی روزانه برای آپدیت
+      setInterval(() => reg.update(), 24 * 60 * 60 * 1000);
+      
+      // هنگام آپدیت، ریلود خودکار
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'activated') {
             window.location.reload();
           }
-        }
+        });
       });
     });
-  });
 }
     </script>
 </body>
