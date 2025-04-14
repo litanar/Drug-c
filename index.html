@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> MedMate </title>
@@ -15,7 +13,6 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-MZ67EPKD6Q');
 </script>
     <!-- اضافه کردن فونت BYekan -->
@@ -326,7 +323,7 @@
             border-radius: 5px;
         }
         .radio-group label {
-            font-size: 12px; /* ف��نت کوچک‌تر */
+            font-size: 12px; /* فونت کوچک‌تر */
             display: flex;
             align-items: center;
             color: #fff; /* متن سفید */
@@ -372,6 +369,7 @@
                 <input type="number" id="prescribedDose" placeholder="دوز تجویزی را وارد کنید">
                 <select id="prescribedDoseUnit" onchange="toggleWeightInput()">
                     <option value="mg/h">mg/h</option>
+                    <option value="mg/min">mg/min</option> <!-- واحد جدید اضافه شد -->
                     <option value="mcg/kg/min">mcg/kg/min</option>
                     <option value="mcg/min">mcg/min</option>
                     <option value="mcg/h">mcg/h</option>
@@ -583,7 +581,7 @@
                 return;
             }
 
-            // تب��یل واحد دوز دارو به میلی‌گرم یا واحد (U)
+            // تبدیل واحد دوز دارو به میلی‌گرم یا واحد (U)
             let drugDoseMgOrU = drugDose;
             if (drugDoseUnit === 'mcg') {
                 drugDoseMgOrU = drugDose / 1000; // تبدیل میکروگرم به میلی‌گرم
@@ -601,6 +599,9 @@
                     break;
                 case 'mg/h':
                     prescribedDoseMgOrUPerHour = prescribedDose;
+                    break;
+                case 'mg/min': // حالت جدید اضافه شده
+                    prescribedDoseMgOrUPerHour = prescribedDose * 60; // تبدیل به میلی‌گرم بر ساعت
                     break;
                 case 'mcg/min':
                     prescribedDoseMgOrUPerHour = (prescribedDose * 60) / 1000; // تبدیل به میلی‌گرم بر ساعت
@@ -813,4 +814,4 @@ if ('serviceWorker' in navigator) {
 }
     </script>
 </body>
-    </html>
+</html>
