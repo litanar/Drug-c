@@ -161,6 +161,9 @@
         #mEqToMgBtn {
             background-color: #4a5568; /* خاکستری تیره (سرمه‌ای) */
         }
+        #concentrationConversionBtn {
+            background-color: #d63384; /* صورتی تیره */
+        }
         footer {
             text-align: center;
             margin-top: 20px;
@@ -515,6 +518,39 @@
                 <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
             </div>
         </div>
+        <!-- کشوی جدید: محاسبه تغییر غلظت محلول‌ها -->
+        <button class="accordion" id="concentrationConversionBtn" onclick="toggleAccordion('concentrationConversion')">محاسبه تغییر غلظت محلول‌ها</button>
+        <div class="accordion-content" id="concentrationConversion">
+            <!-- محلول موجود -->
+            <label for="currentConc">غلظت محلول موجود (درصد):</label>
+            <input type="number" id="currentConc" placeholder="مثال: 5 برای محلول ۵٪">
+            
+            <!-- غلظت مورد نیاز -->
+            <label for="desiredConc">غلظت نهایی مورد نیاز (درصد):</label>
+            <input type="number" id="desiredConc" placeholder="مثال: 10 برای محلول ۱۰٪">
+            
+            <!-- محلول غلیظ -->
+            <label for="stockConc">غلظت محلول غلیظ (درصد):</label>
+            <input type="number" id="stockConc" placeholder="مثال: 50 برای محلول ۵۰٪">
+            
+            <!-- حجم کل -->
+            <label for="totalVolume">حجم کل مورد نیاز (میلی‌لیتر):</label>
+            <input type="number" id="totalVolume" placeholder="مثال: 1000 برای ۱ لیتر">
+            
+            <button onclick="calculateReplacement()">محاسبه حجم جایگزینی</button>
+            
+            <div class="result" id="conversionResult"></div>
+            
+            <!-- بخش اشتراک‌گذاری -->
+            <div class="share-icons hidden" id="conversionShareIcons">
+                <a href="#" class="whatsapp" onclick="shareOnWhatsApp('conversion')"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="instagram" onclick="shareOnInstagram('conversion')"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="telegram" onclick="shareOnTelegram('conversion')"><i class="fab fa-telegram"></i></a>
+                <a href="#" class="twitter" onclick="shareOnTwitter('conversion')"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="sms" onclick="shareViaSMS('conversion')"><i class="fas fa-sms"></i></a>
+            </div>
+        </div>
+        
         <!-- بخش تبلیغات -->
         <div class="nurse-plus-section">
             <p> آموزش های اورژانس و مراقبت های ویژه با دکتر امیر سالاری </p>
@@ -734,29 +770,77 @@
             // ذخیره نتیجه برای اشتراک‌گذاری
             window.lastCalculationResult = resultText;
         }
+        
+        // تابع جدید: محاسبه جایگزینی محلول‌ها
+        function calculateReplacement() {
+            // دریافت مقادیر از فرم
+            const C_current = parseFloat(document.getElementById('currentConc').value);
+            const C_desired = parseFloat(document.getElementById('desiredConc').value);
+            const C_stock = parseFloat(document.getElementById('stockConc').value);
+            const V_total = parseFloat(document.getElementById('totalVolume').value);
+            
+            // اعتبارسنجی مقادیر
+            if (isNaN(C_current) || isNaN(C_desired) || isNaN(C_stock) || isNaN(V_total)) {
+                alert("لطفاً تمام مقادیر را وارد کنید");
+                return;
+            }
+            
+            if (C_desired <= C_current || C_desired >= C_stock) {
+                alert("غلظت مورد نیاز باید بین غلظت فعلی و غلظت محلول غلیظ باشد");
+                return;
+            }
+            
+            // محاسبه حجم جایگزینی
+            const V_replace = V_total * (C_desired - C_current) / (C_stock - C_current);
+            
+            // نمایش نتیجه
+            const resultDiv = document.getElementById('conversionResult');
+            resultDiv.innerHTML = `
+                <p>حجمی که باید جایگزین شود: <strong>${V_replace.toFixed(1)} میلی لیتر</strong></p>
+                <p>دستور کار:</p>
+                <p>1. ${V_replace.toFixed(1)} میلی لیتر از محلول فعلی (${C_current}%) را خارج کنید</p>
+                <p>2. ${V_replace.toFixed(1)} میلی لیتر از محلول غلیظ (${C_stock}%) اضافه کنید</p>
+                <p>3. محلول را کاملاً مخلوط کنید</p>
+            `;
+            resultDiv.classList.add('show');
+            
+            // ذخیره نتیجه برای اشتراک‌گذاری
+            window.lastConversionResult = `
+                محاسبه جایگزینی محلول:
+                غلظت محلول موجود: ${C_current}%
+                غلظت نهایی مورد نیاز: ${C_desired}%
+                غلظت محلول غلیظ: ${C_stock}%
+                حجم کل مورد نیاز: ${V_total} میلی لیتر
+                حجم جایگزینی: ${V_replace.toFixed(1)} میلی لیتر
+            `;
+            
+            // نمایش ایکون‌های اشتراک‌گذاری
+            document.getElementById('conversionShareIcons').classList.remove('hidden');
+        }
+
         // توابع اشتراک‌گذاری
-        function shareOnWhatsApp() {
-            const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        function shareOnWhatsApp(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(result)}`;
             window.open(url, '_blank');
         }
-        function shareOnInstagram() {
-            const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        function shareOnInstagram(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `https://www.instagram.com/direct/new/?text=${encodeURIComponent(result)}`;
             window.open(url, '_blank');
         }
-        function shareOnTelegram() {
-            const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        function shareOnTelegram(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `https://telegram.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(result)}`;
             window.open(url, '_blank');
         }
-        function shareOnTwitter() {
-            const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        function shareOnTwitter(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(result)}`;
             window.open(url, '_blank');
         }
-        function shareViaSMS() {
-            const result = window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+        function shareViaSMS(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
             const url = `sms:?body=${encodeURIComponent(result)}`;
             window.location.href = url;
         }
