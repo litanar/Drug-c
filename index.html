@@ -679,33 +679,37 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Event Delegation برای مدیریت کلیک روی هدر باکس‌ها
             document.querySelector('.boxes-container').addEventListener('click', function(e) {
-    const header = e.target.closest('.box-header');
-    if (!header) return;
-    
-    const box = header.parentElement;
-    const container = box.parentElement;
-    const adSection = document.getElementById('adSection');
-    
-    // اگر باکس از قبل فعال است، آن را ببند
-    if (box.classList.contains('active')) {
-        box.classList.remove('active');
-        container.classList.remove('active');
-        setTimeout(() => {
-            adSection.classList.remove('hidden');
-        }, 300); // هماهنگ با مدت زمان transition
-        return;
-    }
-    
-    // ابتدا تبلیغات را مخفی کن
-    adSection.classList.add('hidden');
-    
-    // سپس باکس کلیک شده را باز کن
-    box.classList.add('active');
-    container.classList.add('active');
-    
-    // اسکرول به موقعیت باکس
-    box.scrollIntoView({behavior: 'smooth', block: 'start'});
-});
+                const header = e.target.closest('.box-header');
+                if (!header) return;
+                
+                const box = header.parentElement;
+                const container = box.parentElement;
+                const adSection = document.getElementById('adSection');
+                
+                // اگر باکس از قبل فعال است، آن را ببند
+                if (box.classList.contains('active')) {
+                    box.classList.remove('active');
+                    container.classList.remove('active');
+                    adSection.classList.remove('hidden');
+                    return;
+                }
+                
+                // ابتدا همه باکس‌ها را ببند
+                document.querySelectorAll('.box').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelectorAll('.boxes-container').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // سپس باکس کلیک شده را باز کن
+                box.classList.add('active');
+                container.classList.add('active');
+                adSection.classList.add('hidden');
+                
+                // اسکرول به موقعیت باکس
+                box.scrollIntoView({behavior: 'smooth', block: 'start'});
+            });
             
             // بقیه کدهای موجود
             updateDateTime();
