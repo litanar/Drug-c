@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1.0.0'; // با هر آپدیت این مقدار را تغییر دهید
+const CACHE_VERSION = 'v1.0.1'; // با هر آپدیت این مقدار را تغییر دهید
 const CACHE_NAME = `app-${CACHE_VERSION}`;
 
 // نصب و کش کردن فایل‌ها
