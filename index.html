@@ -352,39 +352,63 @@
             width: auto;
         }
         
-        /* تم تاریک */
-        .dark-theme {
-            background-color: #1a1a1a;
-            color: #fff;
-        }
-        
-        .dark-theme .box {
-            background-color: #2c3e50;
-            border-color: #34495e;
-            color: #fff;
-        }
-        
-        .dark-theme input,
-        .dark-theme select {
-            background-color: #34495e;
-            border-color: #444;
-            color: #fff;
-        }
-        
-        .dark-theme .result {
-            background-color: #34495e;
-            border-color: #444;
-            color: #fff;
-        }
-        
-        .dark-theme .radio-group {
-            background-color: #34495e;
-        }
-        
-        .dark-theme .nurse-plus-section {
-            background-color: #34495e;
-            color: #fff;
-        }
+       /* تم تاریک */
+.dark-theme {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.dark-theme input,
+.dark-theme select {
+    background-color: #34495e;
+    border-color: #444;
+    color: #fff;
+}
+
+.dark-theme .result {
+    background-color: #34495e;
+    border-color: #444;
+    color: #fff;
+}
+
+.dark-theme .radio-group {
+    background-color: #34495e;
+}
+
+.dark-theme .nurse-plus-section {
+    background-color: #34495e;
+    color: #fff;
+}
+
+/* حالت‌های نمایش باکس‌ها */
+.boxes-container.active .box:not(.active) {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 0.3s, opacity 0.3s linear;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+.box {
+    transition: all 0.3s ease;
+    visibility: visible;
+    opacity: 1;
+}
+
+.nurse-plus-section {
+    transition: all 0.3s ease;
+}
+
+.nurse-plus-section.hidden {
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
     </style>
 </head>
 <body>
