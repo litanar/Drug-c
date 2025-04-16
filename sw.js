@@ -1,42 +1,44 @@
-const CACHE_NAME = 'my-pwa-cache-v2' + new Date().getTime(); // نام کش منحصر به فرد
+const CACHE_NAME = 'my-pwa-cache-v2'; // نسخه را دستی افزایش دهید
 const ASSETS = [
   '/',
   '/index.html',
   '/icon-192x192.png',
   '/icon-512x512.png',
   '/manifest.json'
-  // سایر فایل‌های مورد نیاز
+  // فایل‌های دیگر...
 ];
 
-// نصب سرویس ورکر
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting()) // فعال شدن فوری
+      .then(cache => {
+        console.log('Caching assets in:', CACHE_NAME);
+        return cache.addAll(ASSETS);
+      })
   );
+  self.skipWaiting();
 });
 
-// فعال سازی و حذف کش‌های قدیمی
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
-    }).then(() => self.clients.claim()) // کنترل تمام کلاینت‌ها
+    })
   );
+  self.clients.claim();
 });
 
-// مدیریت درخواست‌های fetch
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   
-  // عدم کش کردن فایل سرویس ورکر
+  // عدم کش کردن درخواست‌های sw.js
   if (event.request.url.includes('/sw.js')) {
     return fetch(event.request);
   }
@@ -44,25 +46,16 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {
-        // استفاده از کش یا دریافت از شبکه
         return cachedResponse || fetch(event.request)
-          .then(response => {
-            // کش کردن پاسخ‌های موفق
-            if (response && response.status === 200) {
-              const responseClone = response.clone();
+          .then(networkResponse => {
+            if (networkResponse && networkResponse.status === 200) {
+              const responseToCache = networkResponse.clone();
               caches.open(CACHE_NAME)
-                .then(cache => cache.put(event.request, responseClone));
+                .then(cache => cache.put(event.request, responseToCache));
             }
-            return response;
+            return networkResponse;
           })
-          .catch(() => caches.match('/index.html')); // بازگشت به صفحه اصلی در صورت خطا
+          .catch(() => caches.match('/index.html'));
       })
   );
-});
-
-// دریافت پیام از صفحه برای رفرش
-self.addEventListener('message', (event) => {
-  if (event.data === 'skipWaiting') {
-    self.skipWaiting();
-  }
 });
