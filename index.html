@@ -1024,53 +1024,37 @@
             const datetime = now.toLocaleDateString('fa-IR', options);
             document.getElementById('datetime').innerText = datetime;
         }
-        
-        // ذخیره رویداد beforeinstallprompt
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            window.deferredPrompt = e;
-            console.log('beforeinstallprompt event fired');
-        });
-        
+        // به‌روزرسانی ساعت و تاریخ هر ثانیه
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // فراخوانی اولیه
         // تابع افزودن به صفحه اصلی
         function addToHomeScreen() {
-            // بررسی آیا اپلیکیشن از قبل نصب شده است
-            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
                 alert('اپلیکیشن شما قبلاً نصب شده است.');
                 return;
             }
-            
-            // بررسی آیا مرورگر از PWA پشتیبانی می‌کند
-            if (!window.deferredPrompt) {
-                // اگر مرورگر از PWA پشتیبانی نمی‌کند
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                const isChrome = /Chrome/.test(navigator.userAgent);
-                
-                if (isMobile) {
-                    if (isChrome) {
-                        alert('برای نصب، منوی مرورگر (سه نقطه بالا) را باز کرده و گزینه "نصب" یا "Add to Home Screen" را انتخاب کنید.');
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                window.deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
                     } else {
-                        alert('برای نصب بهتر است از مرورگر Chrome استفاده کنید. در مرورگر فعلی ممکن است این قابلیت وجود نداشته باشد.');
+                        console.log('User dismissed the A2HS prompt');
                     }
-                } else {
-                    alert('این قابلیت فقط در دستگاه‌های موبایل قابل استفاده است.');
-                }
-                return;
+                    window.deferredPrompt = null;
+                });
+            } else {
+                alert('مرورگر شما از این قابلیت پشتیبانی نمی‌کند. برای نصب از مرورگر کروم استفاده کنید.'); // تغییر پیام خطا
             }
-            
-            // نمایش درخواست نصب
-            window.deferredPrompt.prompt();
-            window.deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the A2HS prompt');
-                } else {
-                    console.log('User dismissed the A2HS prompt');
-                }
-                window.deferredPrompt = null;
-            });
         }
-    if ('serviceWorker' in navigator) {
+        // رویداد beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (event) => {
+            event.preventDefault();
+            window.deferredPrompt = event;
+            document.getElementById('addToHomeScreen').style.display = 'block';
+        });
+
+if ('serviceWorker' in navigator) {
   // ثبت سرویس ورکر بدون ریلود خودکار
   navigator.serviceWorker.register('/sw.js').then(reg => {
     // فقط هنگام وجود آپدیت، ریلود کن
@@ -1089,3 +1073,4 @@
     </script>
 </body>
 </html>
+
