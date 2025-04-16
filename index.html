@@ -1071,21 +1071,38 @@
             });
         }
 if ('serviceWorker' in navigator) {
-  // ثبت سرویس ورکر بدون ریلود خودکار
-  navigator.serviceWorker.register('/sw.js').then(reg => {
-    // فقط هنگام وجود آپدیت، ریلود کن
-    reg.addEventListener('updatefound', () => {
-      const newWorker = reg.installing;
-      newWorker.addEventListener('statechange', () => {
-        if (newWorker.state === 'activated') {
-          if (confirm('نسخه جدید آماده است! می‌خواهید صفحه رفرش شود؟')) {
-            window.location.reload();
+  // ثبت سرویس ورکر
+  navigator.serviceWorker.register('/sw.js')
+    .then(registration => {
+      
+      // دریافت پیام‌های از سرویس ورکر
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data.type === 'NEW_VERSION_AVAILABLE') {
+          const currentVersion = localStorage.getItem('app-version');
+          
+          // اگر نسخه تغییر کرده بود
+          if (!currentVersion || currentVersion !== event.data.version) {
+            if (confirm(`نسخه جدید ${event.data.version} آماده است! آپدیت کنیم؟`)) {
+              localStorage.setItem('app-version', event.data.version);
+              window.location.reload();
+            }
           }
         }
       });
+
+      // چک کردن آپدیت هنگام لود صفحه
+      registration.update().then(() => {
+        console.log('بررسی آپدیت انجام شد');
+      });
     });
-  });
 }
+
+// ذخیره نسخه فعلی هنگام اولین لود
+window.addEventListener('load', () => {
+  if (!localStorage.getItem('app-version')) {
+    localStorage.setItem('app-version', 'v1.0.0');
+  }
+});
     </script>
 </body>
 </html>
