@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> MedMate </title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MZ67EPKD6Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MZ67EPKD6Q');
+</script>
+    <!-- اضافه کردن فونت BYekan -->
+    <link href="https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan.css" rel="stylesheet">
+    <!-- اضافه کردن آیکون‌ها -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- اضافه کردن manifest.json -->
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        /* تنظیمات کلی */
+        body {
+            font-family: 'Yekan', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 15px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 15px;
+        }
+        
+        h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        /* طراحی باکس‌ها */
+        .boxes-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .box {
+            background-color: #fff;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .box-header {
+            padding: 15px;
+            cursor: pointer;
+        }
+        
+        /* حالت فعال برای باکس */
+        .box.active {
+            position: absolute;
+            left: 15px;
+            right: 15px;
+            top: 0;
+            z-index: 100;
+            margin: 0 auto;
+            max-width: calc(100% - 30px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* وقتی باکس فعال است، بقیه باکس‌ها را مخفی کنیم */
+        .boxes-container.active .box:not(.active) {
+            display: none;
+        }
+        
+        /* رنگ‌های مختلف برای باکس‌ها */
+        .box:nth-child(1) { background-color: #e3f2fd; border-color: #bbdefb; } /* آبی روشن */
+        .box:nth-child(2) { background-color: #f1f8e9; border-color: #dcedc8; } /* سبز روشن */
+        .box:nth-child(3) { background-color: #fff8e1; border-color: #ffecb3; } /* زرد روشن */
+        .box:nth-child(4) { background-color: #fce4ec; border-color: #f8bbd0; } /* صورتی روشن */
+        .box:nth-child(5) { background-color: #e8f5e9; border-color: #c8e6c9; } /* سبز */
+        .box:nth-child(6) { background-color: #f3e5f5; border-color: #e1bee7; } /* بنفش */
+        .box:nth-child(7) { background-color: #e0f7fa; border-color: #b2ebf2; } /* فیروزه‌ای */
+        
+        .box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        }
+        
+        .box i {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+        
+        .box-title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        /* محتوای بازشونده */
+        .box-content {
+            display: none;
+            padding: 0 15px 15px;
+            border-top: 1px dashed #ccc;
+            margin-top: 0;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .box.active {
+            padding-bottom: 0;
+        }
+        
+        .box.active .box-content {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* استایل عناصر فرم */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 5px;
+        }
+        
+        button:hover {
+            background-color: #388E3C;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+        
+        /* دکمه بستن */
+        .close-btn {
+            background-color: #f44336 !important;
+            margin-top: 10px;
+        }
+        
+        /* تبلیغات */
+        .nurse-plus-section {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+        
+        .nurse-plus-section.hidden {
+            visibility: hidden;
+            opacity: 0;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        
+        .nurse-plus-section p {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .nurse-plus-section a {
+            text-decoration: none;
+        }
+        
+        .nurse-plus-btn {
+            background-color: #2196F3;
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .nurse-plus-btn:hover {
+            background-color: #0d8aee;
+            transform: translateY(-2px);
+        }
+        
+        /* دکمه تغییر تم */
+        #themeToggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        /* دکمه نصب */
+        #addToHomeScreen {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        /* اشتراک گذاری */
+        .share-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .share-icons a {
+            text-decoration: none;
+            color: #555;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+        
+        .share-icons a:hover {
+            transform: scale(1.2);
+        }
+        
+        .whatsapp { color: #25D366 !important; }
+        .instagram { color: #E4405F !important; }
+        .telegram { color: #0088cc !important; }
+        .twitter { color: #1da1f2 !important; }
+        .sms { color: #34b7f1 !important; }
+        
+        /* فوتتر */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+        
+        .social-links a {
+            color: #555;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            transform: scale(1.2);
+        }
+        
+        .datetime {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        /* گروه رادیو باتن‌ها */
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #f5f5f5;
+        }
+        
+        .radio-group label {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+        }
+        
+        .radio-group input[type="radio"] {
+            margin-left: 5px;
+            width: auto;
+        }
+        
+        /* تم تاریک */
+        .dark-theme {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        .dark-theme h2 {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 0 -15px 20px -15px;
+        }
+        
+        /* رنگ‌های باکس‌ها در حالت تاریک (نسخه تیره‌تر) */
+        .dark-theme .box:nth-child(1) { 
+            background-color: #b3d9ff;
+            border-color: #99ccff;
+        }
+        .dark-theme .box:nth-child(2) { 
+            background-color: #d8eacc;
+            border-color: #c2dbb5;
+        }
+        .dark-theme .box:nth-child(3) { 
+            background-color: #ffe8b3;
+            border-color: #ffdf80;
+        }
+        .dark-theme .box:nth-child(4) { 
+            background-color: #fad0e0;
+            border-color: #f5b8d0;
+        }
+        .dark-theme .box:nth-child(5) { 
+            background-color: #d0e8d0;
+            border-color: #b8d8b8;
+        }
+        .dark-theme .box:nth-child(6) { 
+            background-color: #e8d0f0;
+            border-color: #d8b8e8;
+        }
+        .dark-theme .box:nth-child(7) { 
+            background-color: #b3ecf2;
+            border-color: #80e0ea;
+        }
+
+        /* متن و آیکون‌ها در باکس‌ها */
+        .dark-theme .box {
+            color: #333;
+        }
+        .dark-theme .box i {
+            color: #333;
+        }
+
+        /* بقیه استایل‌های تم تاریک */
+        .dark-theme input,
+        .dark-theme select {
+            background-color: #f5f5f5;
+            border-color: #ddd;
+            color: #333;
+        }
+        .dark-theme label {
+            color: #333;
+        }
+        .dark-theme .result {
+            background-color: #f8f9fa;
+            border-color: #eee;
+            color: #333;
+        }
+        .dark-theme .radio-group {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .dark-theme .nurse-plus-section {
+            background-color: #fff;
+            color: #333;
+        }
+        .dark-theme footer {
+            color: #e0e0e0;
+        }
+        .dark-theme .datetime {
+            color: #bbbbbb;
+        }
+        .dark-theme .social-links a {
+            color: #e0e0e0;
+        }
+        .dark-theme #themeToggle,
+        .dark-theme #addToHomeScreen {
+            background-color: #2980b9;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- دکمه تغییر تم -->
+    <button id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    <!-- دکمه نصب -->
+    <button id="addToHomeScreen" onclick="addToHomeScreen()">
+        <i class="fas fa-download"></i>
+    </button>
+    
+    <div class="container">
+        <h2>MedMate - محاسبات پزشکی</h2>
+        
+        <!-- باکس‌های اصلی -->
+        <div class="boxes-container">
+            <!-- محاسبات دارویی -->
+            <div class="box">
+                <div class="box-header">
+                    <i class="fas fa-syringe"></i>
+                    <div class="box-title">محاسبات دارویی</div>
+                </div>
+                <div class="box-content">
+                    <label for="drugDose">دوز دارو:</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="drugDose" placeholder="دوز دارو">
+                        <select id="drugDoseUnit">
+                            <option value="mg">mg</option>
+                            <option value="mcg">mcg</option>
+                            <option value="U">U</option>
+                        </select>
+                    </div>
+                    
+                    <label for="syringeVolume">حجم سرنگ یا میکروست (سی‌سی):</label>
+                    <input type="number" id="syringeVolume" placeholder="حجم سرنگ">
+                    
+                    <label for="prescribedDose">دوز تجویزی:</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" id="prescribedDose" placeholder="دوز تجویزی">
+                        <select id="prescribedDoseUnit" onchange="toggleWeightInput()">
+                            <option value="mg/h">mg/h</option>
+                            <option value="mg/min">mg/min</option>
+                            <option value="mcg/kg/min">mcg/kg/min</option>
+                            <option value="mcg/min">mcg/min</option>
+                            <option value="mcg/h">mcg/h</option>
+                            <option value="U/h">U/h</option>
+                        </select>
+                    </div>
+                    
+                    <div id="weightInput" style="display: none;">
+                        <label for="weight">وزن بیمار (کیلوگرم):</label>
+                        <input type="number" id="weight" placeholder="وزن بیمار">
+                    </div>
+                    
+                    <div class="radio-group">
+                        <div style="font-weight: bold;">روش تزریق:</div>
+                        <label>
+                            <input type="radio" name="infusionMethod" value="pump" checked> پمپ
+                        </label>
+                        <label>
+                            <input type="radio" name="infusionMethod" value="microset"> میکروست
+                        </label>
+                    </div>
+                    
+                    <button onclick="calculateDrug()">محاسبه دارو</button>
+                    <div class="result" id="drugResult"></div>
+                    
+                    <div class="share-icons">
+                        <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+                    </div>
+                    
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
+                </div>
+            </div>
+            
+            <!-- داروهای درصدی -->
+            <div class="box">
+                <div class="box-header">
+                    <i class="fas fa-percentage"></i>
+                    <div class="box-title">داروهای درصدی</div>
+                </div>
+                <div class="box-content">
+                    <label for="drugPercentage">درصد دارو:</label>
+                    <input type="number" id="drugPercentage" placeholder="مثال: 1 برای ۱٪">
+                    
+                    <label for="requiredDose">دوز مورد نیاز (میلی‌گرم):</label>
+                    <input type="number" id="requiredDose" placeholder="دوز مورد نیاز">
+                    
+                    <button onclick="calculatePercentageDrug()">محاسبه سی‌سی مورد نیاز</button>
+                    <div class="result" id="percentageDrugResult"></div>
+                    
+                    <div class="share-icons">
+                        <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+                    </div>
+                    
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
+                </div>
+            </div>
+            
+            <!-- محاسبات سرم -->
+            <div class="box">
+                <div class="box-header">
+                    <i class="fas fa-tint"></i>
+                    <div class="box-title">محاسبات سرم</div>
+                </div>
+                <div class="box-content">
+                    <label for="fluidVolume">حجم سرم (میلی‌لیتر):</label>
+                    <input type="number" id="fluidVolume" placeholder="حجم سرم">
+                    
+                    <label for="infusionTime">زمان تزریق (ساعت):</label>
+                    <input type="number" id="infusionTime" placeholder="زمان تزریق">
+                    
+                    <label for="dripSet">نوع ست سرم:</label>
+                    <select id="dripSet">
+                        <option value="10">۱۰ قطره/میلی‌لیتر</option>
+                        <option value="15">۱۵ قطره/میلی‌لیتر</option>
+                        <option value="20">۲۰ قطره/میلی‌لیتر</option>
+                    </select>
+                    
+                    <button onclick="calculateFluid()">محاسبه سرم</button>
+                    <div class="result" id="fluidResult"></div>
+                    
+                    <div class="share-icons">
+                        <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+                    </div>
+                    
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
+                </div>
+            </div>
+            
+            <!-- محاسبات میکروست -->
+            <div class="box">
+                <div class="box-header">
+                    <i class="fas fa-tint-slash"></i>
+                    <div class="box-title">محاسبات میکروست</div>
+                </div>
+                <div class="box-content">
+                    <label for="microsetVolume">حجم میکروست (میلی‌لیتر):</label>
+                    <input type="number" id="microsetVolume" placeholder="حجم میکروست">
+                    
+                    <label for="microsetInfusionTime">زمان تزریق (ساعت):</label>
+                    <input type="number" id="microsetInfusionTime" placeholder="زمان تزریق">
+                    
+                    <button onclick="calculateMicroset()">محاسبه میکروست</button>
+                    <div class="result" id="microsetResult"></div>
+                    
+                    <div class="share-icons">
+                        <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+                    </div>
+                    
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
+                </div>
+            </div>
+            
+            <!-- محاسبات اطفال -->
+            <div class="box">
+                <div class="box-header">
+                    <i class="fas fa-baby"></i>
+                    <div class="box-title">محاسبات اطفال</div>
+                </div>
+                <div class="box-content">
+                    <label for="volumeCC">حجم بر حسب سی‌سی:</label>
+                    <input type="number" id="volumeCC" placeholder="مثال: 0.175">
+                    
+                    <button onclick="calculatePediatricDrug()">محاسبه واحدهای انسولین</button>
+                    <div class="result" id="pediatricDrugResult"></div>
+                    
+                    <div class="share-icons">
+                        <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+                    </div>
+                    
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
+                </div>
+            </div>
+            
+            <!-- تبدیل mEq به mg -->
+            <div class="box">
+                <div class="box-header">
+                    <i class="fas fa-exchange-alt"></i>
+                    <div class="box-title">تبدیل mEq به mg</div>
+                </div>
+                <div class="box-content">
+                    <label for="compound">ترکیب:</label>
+                    <select id="compound" required>
+                        <option value="">انتخاب کنید</option>
+                        <option value="74.5,1">پتاسیم کلراید (KCl)</option>
+                        <option value="58.5,1">سدیم کلرید (NaCl)</option>
+                        <option value="84,1">سدیم بی‌کربنات (NaHCO₃)</option>
+                        <option value="111,2">کلسیم کلرید (CaCl₂)</option>
+                        <option value="120,2">منیزیم سولفات (MgSO₄)</option>
+                        <option value="212,1">فسفات پتاسیم (K₃PO₄)</option>
+                        <option value="430,2">کلسیم گلوکونات (Ca(C₆H₁₁O₇)₂)</option>
+                    </select>
+                    
+                    <label for="mEq">مقدار میلی‌اکی‌والان (mEq):</label>
+                    <input type="number" id="mEq" step="0.01" required placeholder="مقدار mEq">
+                    
+                    <button onclick="calculateMgFromMEq()">محاسبه</button>
+                    <div class="result" id="mEqToMgResult"></div>
+                    
+                    <div class="share-icons">
+                        <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+                    </div>
+                    
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
+                </div>
+            </div>
+            
+            <!-- تغییر غلظت محلول‌ها -->
+            <div class="box">
+                <div class="box-header">
+                    <i class="fas fa-flask"></i>
+                    <div class="box-title">تغییر غلظت</div>
+                </div>
+                <div class="box-content">
+                    <label for="currentConc">غلظت محلول موجود (درصد):</label>
+                    <input type="number" id="currentConc" placeholder="مثال: 5">
+                    
+                    <label for="desiredConc">غلظت نهایی مورد نیاز (درصد):</label>
+                    <input type="number" id="desiredConc" placeholder="مثال: 10">
+                    
+                    <label for="stockConc">غلظت محلول غلیظ (درصد):</label>
+                    <input type="number" id="stockConc" placeholder="مثال: 50">
+                    
+                    <label for="totalVolume">حجم کل مورد نیاز (میلی‌لیتر):</label>
+                    <input type="number" id="totalVolume" placeholder="مثال: 1000">
+                    
+                    <button onclick="calculateReplacement()">محاسبه حجم جایگزینی</button>
+                    <div class="result" id="conversionResult"></div>
+                    
+                    <div class="share-icons">
+                        <a href="#" class="whatsapp" onclick="shareOnWhatsApp('conversion')"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="instagram" onclick="shareOnInstagram('conversion')"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="telegram" onclick="shareOnTelegram('conversion')"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="twitter" onclick="shareOnTwitter('conversion')"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="sms" onclick="shareViaSMS('conversion')"><i class="fas fa-sms"></i></a>
+                    </div>
+                    
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- بخش تبلیغات -->
+        <div class="nurse-plus-section" id="adSection">
+            <p> آموزش های اورژانس و مراقبت های ویژه با دکتر امیر سالاری </p>
+            <a href="https://www.aparat.com/amir.salari2136" target="_blank">
+                <button class="nurse-plus-btn">مشاهده ویدئوی آموزشها</button>
+            </a>
+        </div>
+        
+        <!-- فوتتر -->
+        <footer>
+            <div>Code by: Tavakol</div>
+            <div class="social-links">
+                <a href="https://wa.me/989905415680" target="_blank" class="whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="https://instagram.com/_MedMate" target="_blank" class="instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+            <div class="datetime" id="datetime"></div>
+        </footer>
+    </div>
+
+    <script>
+        // مدیریت باز و بسته شدن باکس‌ها
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event Delegation برای مدیریت کلیک روی هدر باکس‌ها
+            document.querySelector('.boxes-container').addEventListener('click', function(e) {
+                const header = e.target.closest('.box-header');
+                if (!header) return;
+                
+                const box = header.parentElement;
+                const container = box.parentElement;
+                const adSection = document.getElementById('adSection');
+                
+                // اگر باکس از قبل فعال است، آن را ببند
+                if (box.classList.contains('active')) {
+                    box.classList.remove('active');
+                    container.classList.remove('active');
+                    adSection.classList.remove('hidden');
+                    return;
+                }
+                
+                // ابتدا همه باکس‌ها را ببند
+                document.querySelectorAll('.box').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelectorAll('.boxes-container').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // سپس باکس کلیک شده را باز کن
+                box.classList.add('active');
+                container.classList.add('active');
+                adSection.classList.add('hidden');
+                
+                // اسکرول به موقعیت باکس
+                box.scrollIntoView({behavior: 'smooth', block: 'start'});
+            });
+            
+            // بقیه کدهای موجود
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js');
+            }
+
+            // بررسی تم ذخیره شده در localStorage
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        });
+
+        // تابع بستن باکس
+        function closeBox(button) {
+            const box = button.closest('.box');
+            const container = box.parentElement;
+            const adSection = document.getElementById('adSection');
+            box.classList.remove('active');
+            container.classList.remove('active');
+            adSection.classList.remove('hidden');
+        }
+
+        // تابع نمایش یا مخفی کردن باکس وزن
+        function toggleWeightInput() {
+            const prescribedDoseUnit = document.getElementById('prescribedDoseUnit').value;
+            const weightInput = document.getElementById('weightInput');
+            weightInput.style.display = prescribedDoseUnit === 'mcg/kg/min' ? 'block' : 'none';
+        }
+        
+        // تابع محاسبه دارو
+        function calculateDrug() {
+            const drugDose = parseFloat(document.getElementById('drugDose').value);
+            const drugDoseUnit = document.getElementById('drugDoseUnit').value;
+            const syringeVolume = parseFloat(document.getElementById('syringeVolume').value);
+            const prescribedDose = parseFloat(document.getElementById('prescribedDose').value);
+            const prescribedDoseUnit = document.getElementById('prescribedDoseUnit').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const infusionMethod = document.querySelector('input[name="infusionMethod"]:checked').value;
+
+            if (isNaN(drugDose) || isNaN(syringeVolume) || isNaN(prescribedDose)) {
+                document.getElementById('drugResult').innerText = "لطفاً تمام مقادیر را به درستی وارد کنید.";
+                return;
+            }
+
+            let drugDoseMgOrU = drugDose;
+            if (drugDoseUnit === 'mcg') {
+                drugDoseMgOrU = drugDose / 1000;
+            }
+
+            let prescribedDoseMgOrUPerHour;
+            switch (prescribedDoseUnit) {
+                case 'mcg/kg/min':
+                    if (isNaN(weight)) {
+                        document.getElementById('drugResult').innerText = "لطفاً وزن بیمار را وارد کنید.";
+                        return;
+                    }
+                    prescribedDoseMgOrUPerHour = (prescribedDose * weight * 60) / 1000;
+                    break;
+                case 'mg/h':
+                    prescribedDoseMgOrUPerHour = prescribedDose;
+                    break;
+                case 'mg/min':
+                    prescribedDoseMgOrUPerHour = prescribedDose * 60;
+                    break;
+                case 'mcg/min':
+                    prescribedDoseMgOrUPerHour = (prescribedDose * 60) / 1000;
+                    break;
+                case 'mcg/h':
+                    prescribedDoseMgOrUPerHour = prescribedDose / 1000;
+                    break;
+                case 'U/h':
+                    prescribedDoseMgOrUPerHour = prescribedDose;
+                    break;
+                default:
+                    document.getElementById('drugResult').innerText = "واحد دوز تجویزی نامعتبر است.";
+                    return;
+            }
+
+            let resultText;
+            const infusionRate = (prescribedDoseMgOrUPerHour / drugDoseMgOrU) * syringeVolume;
+            
+            if (infusionMethod === 'pump') {
+                resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} cc/h (پمپ)`;
+            } else {
+                resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} gtt/min (میکروست)`;
+            }
+
+            document.getElementById('drugResult').innerText = resultText;
+            window.lastCalculationResult = resultText;
+        }
+        
+        // تابع محاسبه داروهای درصدی
+        function calculatePercentageDrug() {
+            const drugPercentage = parseFloat(document.getElementById('drugPercentage').value);
+            const requiredDose = parseFloat(document.getElementById('requiredDose').value);
+            
+            if (isNaN(drugPercentage) || isNaN(requiredDose)) {
+                document.getElementById('percentageDrugResult').innerText = "لطفاً تمام مقادیر را به درستی وارد کنید.";
+                return;
+            }
+            
+            const ccNeeded = (requiredDose / (drugPercentage * 10)).toFixed(2);
+            const resultText = `سی‌سی مورد نیاز: ${ccNeeded} سی‌سی`;
+            document.getElementById('percentageDrugResult').innerText = resultText;
+            window.lastCalculationResult = resultText;
+        }
+        
+        // تابع محاسبه سرم
+        function calculateFluid() {
+            const fluidVolume = parseFloat(document.getElementById('fluidVolume').value);
+            const infusionTime = parseFloat(document.getElementById('infusionTime').value);
+            const dripSet = parseFloat(document.getElementById('dripSet').value);
+            
+            if (isNaN(fluidVolume) || isNaN(infusionTime)) {
+                document.getElementById('fluidResult').innerText = "لطفاً حجم سرم و زمان تزریق را وارد کنید.";
+                return;
+            }
+            
+            const dropsPerMinute = (fluidVolume * dripSet) / (infusionTime * 60);
+            const resultText = `قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
+            document.getElementById('fluidResult').innerText = resultText;
+            window.lastCalculationResult = resultText;
+        }
+        
+        // تابع محاسبه میکروست
+        function calculateMicroset() {
+            const microsetVolume = parseFloat(document.getElementById('microsetVolume').value);
+            const microsetInfusionTime = parseFloat(document.getElementById('microsetInfusionTime').value);
+            
+            if (isNaN(microsetVolume) || isNaN(microsetInfusionTime)) {
+                document.getElementById('microsetResult').innerText = "لطفاً حجم و زمان تزریق را وارد کنید.";
+                return;
+            }
+            
+            const dropsPerMinute = (microsetVolume * 60) / (microsetInfusionTime * 60);
+            const resultText = `قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
+            document.getElementById('microsetResult').innerText = resultText;
+            window.lastCalculationResult = resultText;
+        }
+        
+        // تابع محاسبه اطفال
+        function calculatePediatricDrug() {
+            const volumeCC = parseFloat(document.getElementById('volumeCC').value);
+            
+            if (isNaN(volumeCC)) {
+                document.getElementById('pediatricDrugResult').innerText = "لطفاً حجم را به درستی وارد کنید.";
+                return;
+            }
+            
+            const insulinUnits = (volumeCC / 0.02).toFixed(2);
+            const resultText = `واحدهای انسولین: ${insulinUnits}`;
+            document.getElementById('pediatricDrugResult').innerText = resultText;
+            window.lastCalculationResult = resultText;
+        }
+        
+        // تابع تبدیل mEq به mg
+        function calculateMgFromMEq() {
+            const compound = document.getElementById('compound').value;
+            const mEq = parseFloat(document.getElementById('mEq').value);
+
+            if (!compound || isNaN(mEq)) {
+                document.getElementById('mEqToMgResult').innerText = "لطفاً ترکیب و مقدار mEq را وارد کنید.";
+                return;
+            }
+
+            const [molarMass, valence] = compound.split(',').map(Number);
+            const mg = (mEq * (molarMass / valence)).toFixed(2);
+
+            const resultText = `${mEq} mEq = ${mg} mg`;
+            document.getElementById('mEqToMgResult').innerText = resultText;
+            window.lastCalculationResult = resultText;
+        }
+        
+        // تابع محاسبه تغییر غلظت
+        function calculateReplacement() {
+            const C_current = parseFloat(document.getElementById('currentConc').value);
+            const C_desired = parseFloat(document.getElementById('desiredConc').value);
+            const C_stock = parseFloat(document.getElementById('stockConc').value);
+            const V_total = parseFloat(document.getElementById('totalVolume').value);
+            
+            if (isNaN(C_current) || isNaN(C_desired) || isNaN(C_stock) || isNaN(V_total)) {
+                alert("لطفاً تمام مقادیر را وارد کنید");
+                return;
+            }
+            
+            if (C_desired <= C_current || C_desired >= C_stock) {
+                alert("غلظت مورد نیاز باید بین غلظت فعلی و غلظت محلول غلیظ باشد");
+                return;
+            }
+            
+            const V_replace = (V_total * (C_desired - C_current) / (C_stock - C_current)).toFixed(1);
+            
+            document.getElementById('conversionResult').innerHTML = `
+                <p>حجم جایگزینی: <strong>${V_replace} میلی‌لیتر</strong></p>
+                <p>1. ${V_replace} میلی‌لیتر از محلول ${C_current}% خارج کنید</p>
+                <p>2. ${V_replace} میلی‌لیتر از محلول ${C_stock}% اضافه کنید</p>
+            `;
+            
+            window.lastConversionResult = document.getElementById('conversionResult').innerText;
+        }
+
+        // توابع اشتراک‌گذاری
+        function shareOnWhatsApp(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(result)}`;
+            window.open(url, '_blank');
+        }
+        
+        function shareOnInstagram(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+            const url = `https://www.instagram.com/direct/new/?text=${encodeURIComponent(result)}`;
+            window.open(url, '_blank');
+        }
+        
+        function shareOnTelegram(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+            const url = `https://telegram.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(result)}`;
+            window.open(url, '_blank');
+        }
+        
+        function shareOnTwitter(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(result)}`;
+            window.open(url, '_blank');
+        }
+        
+        function shareViaSMS(type = 'drug') {
+            const result = type === 'conversion' ? window.lastConversionResult : window.lastCalculationResult || "نتیجه‌ای برای اشتراک‌گذاری وجود ندارد.";
+            const url = `sms:?body=${encodeURIComponent(result)}`;
+            window.location.href = url;
+        }
+        
+        // تابع تغییر تم
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const themeToggle = document.getElementById('themeToggle');
+            if (document.body.classList.contains('dark-theme')) {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // تابع نمایش ساعت و تاریخ
+        function updateDateTime() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const datetime = now.toLocaleDateString('fa-IR', options);
+            document.getElementById('datetime').innerText = datetime;
+        }
+        
+        // ذخیره رویداد beforeinstallprompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+            console.log('beforeinstallprompt event fired');
+        });
+        
+        // تابع افزودن به صفحه اصلی
+        function addToHomeScreen() {
+            // بررسی آیا اپلیکیشن از قبل نصب شده است
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                alert('اپلیکیشن شما قبلاً نصب شده است.');
+                return;
+            }
+            
+            // بررسی آیا مرورگر از PWA پشتیبانی می‌کند
+            if (!window.deferredPrompt) {
+                // اگر مرورگر از PWA پشتیبانی نمی‌کند
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                const isChrome = /Chrome/.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    if (isChrome) {
+                        alert('برای نصب، منوی مرورگر (سه نقطه بالا) را باز کرده و گزینه "نصب" یا "Add to Home Screen" را انتخاب کنید.');
+                    } else {
+                        alert('برای نصب بهتر است از مرورگر Chrome استفاده کنید. در مرورگر فعلی ممکن است این قابلیت وجود نداشته باشد.');
+                    }
+                } else {
+                    alert('این قابلیت فقط در دستگاه‌های موبایل قابل استفاده است.');
+                }
+                return;
+            }
+            
+            // نمایش درخواست نصب
+            window.deferredPrompt.prompt();
+            window.deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the A2HS prompt');
+                } else {
+                    console.log('User dismissed the A2HS prompt');
+                }
+                window.deferredPrompt = null;
+            });
+        }
+    </script>
+</body>
+</html>
