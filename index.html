@@ -31,7 +31,6 @@
             margin: 0;
             padding: 15px;
             color: #333;
-            transition: all 0.3s ease;
         }
         
         .container {
@@ -45,7 +44,6 @@
             font-size: 22px;
             margin-bottom: 20px;
             text-align: center;
-            transition: all 0.3s ease;
         }
         
         /* طراحی باکس‌ها */
@@ -87,7 +85,7 @@
         
         /* وقتی باکس فعال است، بقیه باکس‌ها را مخفی کنیم */
         .boxes-container.active .box:not(.active) {
-            display: none;
+            visibility: hidden;
         }
         
         /* رنگ‌های مختلف برای باکس‌ها */
@@ -108,7 +106,6 @@
             font-size: 28px;
             margin-bottom: 10px;
             color: #333;
-            transition: color 0.3s ease;
         }
         
         .box-title {
@@ -200,6 +197,7 @@
             text-align: center;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
             border: 1px solid #eee;
+            transition: all 0.3s ease;
         }
         
         .nurse-plus-section.hidden {
@@ -354,94 +352,38 @@
             width: auto;
         }
         
-        /* تم تاریک با پس‌زمینه سرمه‌ای پررنگ */
+        /* تم تاریک */
         .dark-theme {
-            background-color: #121212; /* تغییر به سرمه‌ای پررنگ */
-            color: #e0e0e0;
-        }
-        
-        .dark-theme h2 {
-            background-color: #1e1e1e; /* تیره‌تر از پس‌زمینه */
+            background-color: #1a1a1a;
             color: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 0 -15px 20px -15px;
         }
         
-        /* رنگ‌های باکس‌ها در حالت تاریک (نسخه تیره‌تر) */
-        .dark-theme .box:nth-child(1) { 
-            background-color: #b3d9ff;
-            border-color: #99ccff;
-        }
-        .dark-theme .box:nth-child(2) { 
-            background-color: #d8eacc;
-            border-color: #c2dbb5;
-        }
-        .dark-theme .box:nth-child(3) { 
-            background-color: #ffe8b3;
-            border-color: #ffdf80;
-        }
-        .dark-theme .box:nth-child(4) { 
-            background-color: #fad0e0;
-            border-color: #f5b8d0;
-        }
-        .dark-theme .box:nth-child(5) { 
-            background-color: #d0e8d0;
-            border-color: #b8d8b8;
-        }
-        .dark-theme .box:nth-child(6) { 
-            background-color: #e8d0f0;
-            border-color: #d8b8e8;
-        }
-        .dark-theme .box:nth-child(7) { 
-            background-color: #b3ecf2;
-            border-color: #80e0ea;
-        }
-
-        /* متن و آیکون‌ها در باکس‌ها */
         .dark-theme .box {
-            color: #333;
+            background-color: #2c3e50;
+            border-color: #34495e;
+            color: #fff;
         }
-        .dark-theme .box i {
-            color: #333;
-        }
-
-        /* بقیه استایل‌های تم تاریک */
+        
         .dark-theme input,
         .dark-theme select {
-            background-color: #f5f5f5;
-            border-color: #ddd;
-            color: #333;
+            background-color: #34495e;
+            border-color: #444;
+            color: #fff;
         }
-        .dark-theme label {
-            color: #333;
-        }
+        
         .dark-theme .result {
-            background-color: #f8f9fa;
-            border-color: #eee;
-            color: #333;
+            background-color: #34495e;
+            border-color: #444;
+            color: #fff;
         }
+        
         .dark-theme .radio-group {
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #34495e;
         }
+        
         .dark-theme .nurse-plus-section {
-            background-color: #fff;
-            color: #333;
-        }
-        .dark-theme footer {
-            color: #bbbbbb;
-        }
-        .dark-theme .datetime {
-            color: #999999;
-        }
-        .dark-theme .social-links a {
-            color: #bbbbbb;
-        }
-        .dark-theme #themeToggle,
-        .dark-theme #addToHomeScreen {
-            background-color: #2980b9;
-            color: #ffffff;
+            background-color: #34495e;
+            color: #fff;
         }
     </style>
 </head>
@@ -776,12 +718,6 @@
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js');
             }
-
-            // بررسی تم ذخیره شده در localStorage
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-theme');
-                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
-            }
         });
 
         // تابع بستن باکس
@@ -1010,10 +946,8 @@
             const themeToggle = document.getElementById('themeToggle');
             if (document.body.classList.contains('dark-theme')) {
                 themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-                localStorage.setItem('theme', 'dark');
             } else {
                 themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                localStorage.setItem('theme', 'light');
             }
         }
         
@@ -1025,50 +959,25 @@
             document.getElementById('datetime').innerText = datetime;
         }
         
-        // ذخیره رویداد beforeinstallprompt
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            window.deferredPrompt = e;
-            console.log('beforeinstallprompt event fired');
-        });
-        
         // تابع افزودن به صفحه اصلی
         function addToHomeScreen() {
-            // بررسی آیا اپلیکیشن از قبل نصب شده است
-            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
                 alert('اپلیکیشن شما قبلاً نصب شده است.');
                 return;
             }
-            
-            // بررسی آیا مرورگر از PWA پشتیبانی می‌کند
-            if (!window.deferredPrompt) {
-                // اگر مرورگر از PWA پشتیبانی نمی‌کند
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                const isChrome = /Chrome/.test(navigator.userAgent);
-                
-                if (isMobile) {
-                    if (isChrome) {
-                        alert('برای نصب، منوی مرورگر (سه نقطه بالا) را باز کرده و گزینه "نصب" یا "Add to Home Screen" را انتخاب کنید.');
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                window.deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
                     } else {
-                        alert('برای نصب بهتر است از مرورگر Chrome استفاده کنید. در مرورگر فعلی ممکن است این قابلیت وجود نداشته باشد.');
+                        console.log('User dismissed the A2HS prompt');
                     }
-                } else {
-                    alert('این قابلیت فقط در دستگاه‌های موبایل قابل استفاده است.');
-                }
-                return;
+                    window.deferredPrompt = null;
+                });
+            } else {
+                alert('مرورگر شما از این قابلیت پشتیبانی نمی‌کند. برای نصب از مرورگر کروم استفاده کنید.');
             }
-            
-            // نمایش درخواست نصب
-            window.deferredPrompt.prompt();
-            window.deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the A2HS prompt');
-                } else {
-                    console.log('User dismissed the A2HS prompt');
-                }
-                window.deferredPrompt = null;
-            });
         }
     </script>
 </body>
