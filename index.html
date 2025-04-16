@@ -52,7 +52,7 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 20px;
-            transition: all 0.3s ease;
+            position: relative;
         }
         
         .box {
@@ -66,14 +66,26 @@
             overflow: hidden;
         }
         
-        .box.active {
-            grid-column: 1 / -1;
-            z-index: 10;
-        }
-        
         .box-header {
             padding: 15px;
             cursor: pointer;
+        }
+        
+        /* حالت فعال برای باکس */
+        .box.active {
+            position: absolute;
+            left: 15px;
+            right: 15px;
+            top: 0;
+            z-index: 100;
+            margin: 0 auto;
+            max-width: calc(100% - 30px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* وقتی باکس فعال است، بقیه باکس‌ها را مخفی کنیم */
+        .boxes-container.active .box:not(.active) {
+            visibility: hidden;
         }
         
         /* رنگ‌های مختلف برای باکس‌ها */
@@ -363,23 +375,6 @@
             background-color: #34495e;
             color: #fff;
         }
-
-        /* استایل‌های موبایل */
-        @media (max-width: 768px) {
-            .boxes-container {
-                grid-template-columns: 1fr !important;
-                gap: 8px;
-            }
-            
-            .box {
-                width: 100% !important;
-                margin-bottom: 10px;
-            }
-            
-            .box.active {
-                margin-bottom: 20px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -454,7 +449,7 @@
                         <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
                     </div>
                     
-                    <button class="close-btn" onclick="this.closest('.box').classList.remove('active')">بستن</button>
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
                 </div>
             </div>
             
@@ -482,7 +477,7 @@
                         <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
                     </div>
                     
-                    <button class="close-btn" onclick="this.closest('.box').classList.remove('active')">بستن</button>
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
                 </div>
             </div>
             
@@ -517,7 +512,7 @@
                         <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
                     </div>
                     
-                    <button class="close-btn" onclick="this.closest('.box').classList.remove('active')">بستن</button>
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
                 </div>
             </div>
             
@@ -545,7 +540,7 @@
                         <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
                     </div>
                     
-                    <button class="close-btn" onclick="this.closest('.box').classList.remove('active')">بستن</button>
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
                 </div>
             </div>
             
@@ -570,7 +565,7 @@
                         <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
                     </div>
                     
-                    <button class="close-btn" onclick="this.closest('.box').classList.remove('active')">بستن</button>
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
                 </div>
             </div>
             
@@ -607,7 +602,7 @@
                         <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
                     </div>
                     
-                    <button class="close-btn" onclick="this.closest('.box').classList.remove('active')">بستن</button>
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
                 </div>
             </div>
             
@@ -641,7 +636,7 @@
                         <a href="#" class="sms" onclick="shareViaSMS('conversion')"><i class="fas fa-sms"></i></a>
                     </div>
                     
-                    <button class="close-btn" onclick="this.closest('.box').classList.remove('active')">بستن</button>
+                    <button class="close-btn" onclick="closeBox(this)">بستن</button>
                 </div>
             </div>
         </div>
@@ -678,23 +673,29 @@
                 if (!header) return;
                 
                 const box = header.parentElement;
+                const container = box.parentElement;
                 
-                // بستن همه باکس‌های دیگر
+                // اگر باکس از قبل فعال است، آن را ببند
+                if (box.classList.contains('active')) {
+                    box.classList.remove('active');
+                    container.classList.remove('active');
+                    return;
+                }
+                
+                // ابتدا همه باکس‌ها را ببند
                 document.querySelectorAll('.box').forEach(item => {
-                    if (item !== box) {
-                        item.classList.remove('active');
-                    }
+                    item.classList.remove('active');
+                });
+                document.querySelectorAll('.boxes-container').forEach(item => {
+                    item.classList.remove('active');
                 });
                 
-                // باز/بسته کردن باکس فعلی
-                box.classList.toggle('active');
+                // سپس باکس کلیک شده را باز کن
+                box.classList.add('active');
+                container.classList.add('active');
                 
-                // اسکرول به باکس اگر باز شده باشد
-                if (box.classList.contains('active')) {
-                    setTimeout(() => {
-                        box.scrollIntoView({behavior: 'smooth', block: 'nearest'});
-                    }, 100);
-                }
+                // اسکرول به موقعیت باکس
+                box.scrollIntoView({behavior: 'smooth', block: 'start'});
             });
             
             // بقیه کدهای موجود
@@ -705,6 +706,14 @@
                 navigator.serviceWorker.register('/sw.js');
             }
         });
+
+        // تابع بستن باکس
+        function closeBox(button) {
+            const box = button.closest('.box');
+            const container = box.parentElement;
+            box.classList.remove('active');
+            container.classList.remove('active');
+        }
 
         // تابع نمایش یا مخفی کردن باکس وزن
         function toggleWeightInput() {
