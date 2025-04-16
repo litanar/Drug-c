@@ -197,6 +197,16 @@
             text-align: center;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
             border: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+        
+        .nurse-plus-section.hidden {
+            visibility: hidden;
+            opacity: 0;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            border: none;
         }
         
         .nurse-plus-section p {
@@ -642,7 +652,7 @@
         </div>
         
         <!-- بخش تبلیغات -->
-        <div class="nurse-plus-section">
+        <div class="nurse-plus-section" id="adSection">
             <p> آموزش های اورژانس و مراقبت های ویژه با دکتر امیر سالاری </p>
             <a href="https://www.aparat.com/amir.salari2136" target="_blank">
                 <button class="nurse-plus-btn">مشاهده ویدئوی آموزشها</button>
@@ -674,11 +684,13 @@
                 
                 const box = header.parentElement;
                 const container = box.parentElement;
+                const adSection = document.getElementById('adSection');
                 
                 // اگر باکس از قبل فعال است، آن را ببند
                 if (box.classList.contains('active')) {
                     box.classList.remove('active');
                     container.classList.remove('active');
+                    adSection.classList.remove('hidden');
                     return;
                 }
                 
@@ -693,6 +705,7 @@
                 // سپس باکس کلیک شده را باز کن
                 box.classList.add('active');
                 container.classList.add('active');
+                adSection.classList.add('hidden');
                 
                 // اسکرول به موقعیت باکس
                 box.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -711,8 +724,10 @@
         function closeBox(button) {
             const box = button.closest('.box');
             const container = box.parentElement;
+            const adSection = document.getElementById('adSection');
             box.classList.remove('active');
             container.classList.remove('active');
+            adSection.classList.remove('hidden');
         }
 
         // تابع نمایش یا مخفی کردن باکس وزن
