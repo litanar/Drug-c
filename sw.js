@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-pwa-cache-v' + new Date().getTime(); // نام کش منحصر به فرد
+const CACHE_NAME = 'my-pwa-cache-v2' + new Date().getTime(); // نام کش منحصر به فرد
 const ASSETS = [
   '/',
   '/index.html',
