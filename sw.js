@@ -1,61 +1,44 @@
-const CACHE_NAME = 'my-pwa-cache-v8'; // نسخه را دستی افزایش دهید
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/icon-192x192.png',
-  '/icon-512x512.png',
-  '/manifest.json'
-  // فایل‌های دیگر...
-];
+const CACHE_VERSION = 'v1.0.0'; // با هر آپدیت این مقدار را تغییر دهید
+const CACHE_NAME = `app-${CACHE_VERSION}`;
 
+// نصب و کش کردن فایل‌ها
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Caching assets in:', CACHE_NAME);
-        return cache.addAll(ASSETS);
+      .then(cache => cache.addAll([
+        '/',
+        '/index.html',
+        '/styles.css',
+        '/app.js'
+      ]))
+      .then(() => {
+        console.log('نسخه جدید نصب شد:', CACHE_VERSION);
+        self.skipWaiting(); // فعال‌سازی فوری
       })
   );
-  self.skipWaiting();
 });
 
+// فعال‌سازی و پاک‌سازی کش قدیمی
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      // ارسال پیام به همه تبهای باز
+      self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          client.postMessage({
+            type: 'NEW_VERSION_AVAILABLE',
+            version: CACHE_VERSION
+          });
+        });
+      });
     })
-  );
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  
-  // عدم کش کردن درخواست‌های sw.js
-  if (event.request.url.includes('/sw.js')) {
-    return fetch(event.request);
-  }
-
-  event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        return cachedResponse || fetch(event.request)
-          .then(networkResponse => {
-            if (networkResponse && networkResponse.status === 200) {
-              const responseToCache = networkResponse.clone();
-              caches.open(CACHE_NAME)
-                .then(cache => cache.put(event.request, responseToCache));
-            }
-            return networkResponse;
-          })
-          .catch(() => caches.match('/index.html'));
-      })
   );
 });
