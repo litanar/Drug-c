@@ -1070,44 +1070,21 @@
                 window.deferredPrompt = null;
             });
         }
-
+<script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    // ثبت سرویس ورکر
-    navigator.serviceWorker.register('/sw.js')
-      .then(function(registration) {
-        console.log('ServiceWorker registration successful');
-        
-        // چک کردن آپدیت‌ها هر 60 ثانیه
-        setInterval(function() {
-          registration.update();
-        }, 60000);
-        
-        // تشخیص آپدیت جدید
-        registration.addEventListener('updatefound', function() {
-          const newWorker = registration.installing;
-          
-          newWorker.addEventListener('statechange', function() {
-            if (newWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                // نمایش پیام آپدیت
-                if (confirm('نسخه جدید برنامه آماده است! برای استفاده از آخرین تغییرات، لطفاً صفحه را رفرش کنید.')) {
-                  // ارسال پیام به سرویس ورکر برای فعال‌سازی
-                  newWorker.postMessage('skipWaiting');
-                  
-                  // رفرش صفحه پس از فعال‌سازی
-                  newWorker.addEventListener('controllerchange', function() {
-                    window.location.reload();
-                  });
-                }
-              }
-            }
-          });
-        });
-      })
-      .catch(function(err) {
-        console.log('ServiceWorker registration failed: ', err);
+  // ثبت سرویس ورکر بدون ریلود خودکار
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    // فقط هنگام وجود آپدیت، ریلود کن
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'activated') {
+          if (confirm('نسخه جدید آماده است! می‌خواهید صفحه رفرش شود؟')) {
+            window.location.reload();
+          }
+        }
       });
+    });
   });
 }
     </script>
