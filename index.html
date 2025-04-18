@@ -556,6 +556,57 @@
         .time-input-container select {
             width: 100px;
         }
+
+        /* استایل‌های اختصاصی برای باکس تبدیل واحد */
+        .conversion-result {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .conversion-row {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .conversion-row .value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .conversion-row .unit {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        .conversion-row .equals {
+            font-size: 1.1em;
+            color: #3498db;
+        }
+
+        .compound-info {
+            font-size: 0.9em;
+            color: #27ae60;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* حالت تاریک */
+        .dark-theme .conversion-row .value {
+            color: #ecf0f1;
+        }
+
+        .dark-theme .conversion-row .unit {
+            color: #bdc3c7;
+        }
+
+        .dark-theme .compound-info {
+            color: #2ecc71;
+        }
     </style>
 </head>
 <body>
@@ -762,37 +813,42 @@
                 </div>
             </div>
             
-            <!-- تبدیل mEq به mg -->
+            <!-- تبدیل mEq به mg و ml -->
             <div class="box">
                 <div class="box-header">
                     <i class="fas fa-exchange-alt"></i>
-                    <div class="box-title">تبدیل mEq به mg</div>
+                    <div class="box-title">تبدیل mEq به mg و ml</div>
                 </div>
                 <div class="box-content">
                     <label for="compound">ترکیب:</label>
-                    <select id="compound" required>
+                    <select id="compound" onchange="updateConcentrationOptions()" required>
                         <option value="">انتخاب کنید</option>
-                        <option value="74.5,1">پتاسیم کلراید (KCl)</option>
-                        <option value="58.5,1">سدیم کلرید (NaCl)</option>
-                        <option value="84,1">سدیم بی‌کربنات (NaHCO₃)</option>
-                        <option value="111,2">کلسیم کلرید (CaCl₂)</option>
-                        <option value="120,2">منیزیم سولفات (MgSO₄)</option>
-                        <option value="212,1">فسفات پتاسیم (K₃PO₄)</option>
-                        <option value="430,2">کلسیم گلوکونات (Ca(C₆H₁₁O₇)₂)</option>
+                        <option value="74.5,1,Potassium Chloride">پتاسیم کلراید (KCl)</option>
+                        <option value="58.5,1,Sodium Chloride">سدیم کلرید (NaCl)</option>
+                        <option value="84,1,Sodium Bicarbonate">سدیم بی‌کربنات (NaHCO₃)</option>
+                        <option value="111,2,Calcium Chloride">کلسیم کلرید (CaCl₂)</option>
+                        <option value="120,2,Magnesium Sulfate">منیزیم سولفات (MgSO₄)</option>
+                        <option value="212,1,Potassium Phosphate">فسفات پتاسیم (K₃PO₄)</option>
+                        <option value="430,2,Calcium Gluconate">کلسیم گلوکونات (Ca(C₆H₁₁O₇)₂)</option>
+                    </select>
+                    
+                    <label for="concentration">غلظت محلول:</label>
+                    <select id="concentration" required>
+                        <!-- گزینه‌ها به صورت خودکار پر می‌شوند -->
                     </select>
                     
                     <label for="mEq">مقدار میلی‌اکی‌والان (mEq):</label>
-                    <input type="number" id="mEq" step="0.01" required placeholder="مقدار mEq">
+                    <input type="number" id="mEq" step="0.01" required placeholder="مثال: 20">
                     
                     <button onclick="calculateMgFromMEq()">محاسبه</button>
                     <div class="result" id="mEqToMgResult"></div>
                     
                     <div class="share-icons">
-                        <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" class="instagram" onclick="shareOnInstagram()"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="telegram" onclick="shareOnTelegram()"><i class="fab fa-telegram"></i></a>
-                        <a href="#" class="twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="sms" onclick="shareViaSMS()"><i class="fas fa-sms"></i></a>
+                        <a href="#" class="whatsapp" onclick="shareOnWhatsApp('conversion')"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="instagram" onclick="shareOnInstagram('conversion')"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="telegram" onclick="shareOnTelegram('conversion')"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="twitter" onclick="shareOnTwitter('conversion')"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="sms" onclick="shareViaSMS('conversion')"><i class="fas fa-sms"></i></a>
                     </div>
                     
                     <button class="close-btn" onclick="closeBox(this)">بستن</button>
@@ -951,6 +1007,9 @@
                 document.body.classList.add('dark-theme');
                 document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
             }
+
+            // مقداردهی اولیه برای باکس تبدیل mEq به mg و ml
+            updateConcentrationOptions();
         });
 
         // تابع بستن باکس (ویرایش شده)
@@ -1134,24 +1193,6 @@
             window.lastCalculationResult = resultText;
         }
         
-        // تابع تبدیل mEq به mg (با تغییر ترتیب عدد و واحد)
-        function calculateMgFromMEq() {
-            const compound = document.getElementById('compound').value;
-            const mEq = parseFloat(document.getElementById('mEq').value);
-
-            if (!compound || isNaN(mEq)) {
-                document.getElementById('mEqToMgResult').innerText = "لطفاً ترکیب و مقدار mEq را وارد کنید.";
-                return;
-            }
-
-            const [molarMass, valence] = compound.split(',').map(Number);
-            const mg = (mEq * (molarMass / valence));
-
-            const resultText = `${mEq} mEq = ${formatNumber(mg)} mg`;
-            document.getElementById('mEqToMgResult').innerText = resultText;
-            window.lastCalculationResult = resultText;
-        }
-        
         // تابع محاسبه تغییر غلظت (با تغییر ترتیب عدد و واحد)
         function calculateReplacement() {
             const C_current = parseFloat(document.getElementById('currentConc').value);
@@ -1276,6 +1317,167 @@
                 }
                 window.deferredPrompt = null;
             });
+        }
+
+        // توابع مربوط به باکس تبدیل mEq به mg و ml
+        function updateConcentrationOptions() {
+            const compound = document.getElementById("compound").value;
+            const concentrationSelect = document.getElementById("concentration");
+            
+            concentrationSelect.innerHTML = "";
+            
+            if (!compound) {
+                // اضافه کردن گزینه پیش‌فرض وقتی ترکیبی انتخاب نشده
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "";
+                defaultOption.textContent = "ابتدا ترکیب را انتخاب کنید";
+                concentrationSelect.appendChild(defaultOption);
+                return;
+            }
+
+            const compoundName = compound.split(",")[2];
+            
+            // اضافه کردن گزینه‌های غلظت بر اساس ترکیب انتخاب شده
+            switch (compoundName) {
+                case "Potassium Chloride":
+                    addConcentrationOption("10%", 10);
+                    addConcentrationOption("7.5%", 7.5);
+                    addConcentrationOption("15%", 15);
+                    break;
+                case "Sodium Chloride":
+                    addConcentrationOption("0.9%", 0.9);
+                    addConcentrationOption("3%", 3);
+                    addConcentrationOption("5%", 5);
+                    break;
+                case "Sodium Bicarbonate":
+                    addConcentrationOption("8.4%", 8.4);
+                    addConcentrationOption("7.5%", 7.5);
+                    addConcentrationOption("4.2%", 4.2);
+                    break;
+                case "Calcium Chloride":
+                    addConcentrationOption("10%", 10);
+                    addConcentrationOption("5%", 5);
+                    break;
+                case "Magnesium Sulfate":
+                    addConcentrationOption("50%", 50);
+                    addConcentrationOption("20%", 20);
+                    break;
+                case "Potassium Phosphate":
+                    addConcentrationOption("4.4(مولتی ویال)", 4.4);
+                    break;
+                case "Calcium Gluconate":
+                    addConcentrationOption("10%", 10);
+                    break;
+            }
+        }
+
+        // تابع کمکی برای اضافه کردن گزینه به لیست غلظت‌ها
+        function addConcentrationOption(text, value) {
+            const select = document.getElementById("concentration");
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = text;
+            select.appendChild(option);
+        }
+
+        // تابع محاسبه تبدیل mEq به mg و ml
+        function calculateMgFromMEq() {
+            const compound = document.getElementById("compound").value;
+            const concentration = document.getElementById("concentration").value;
+            const mEq = parseFloat(document.getElementById("mEq").value);
+
+            // اعتبارسنجی ورودی‌ها
+            if (!compound) {
+                document.getElementById("mEqToMgResult").innerText = "لطفاً ترکیب دارویی را انتخاب کنید!";
+                return;
+            }
+            
+            if (!concentration) {
+                document.getElementById("mEqToMgResult").innerText = "لطفاً غلظت محلول را انتخاب کنید!";
+                return;
+            }
+            
+            if (isNaN(mEq) || mEq <= 0) {
+                document.getElementById("mEqToMgResult").innerText = "لطفاً مقدار mEq را به درستی وارد کنید!";
+                return;
+            }
+
+            // تجزیه اطلاعات ترکیب انتخاب شده
+            const [molarMass, valence, compoundName] = compound.split(",");
+            const molarMassNum = parseFloat(molarMass);
+            const valenceNum = parseInt(valence);
+            const concentrationNum = parseFloat(concentration);
+
+            // محاسبه میلی‌گرم
+            const mg = (mEq * (molarMassNum / valenceNum)).toFixed(2);
+            
+            // محاسبه میلی‌لیتر
+            const mEqPerMl = getMEqPerMl(compoundName, concentrationNum);
+            const ml = (mEq / mEqPerMl).toFixed(2);
+
+            // نمایش نتیجه
+            const resultText = `
+                <div class="conversion-result">
+                    <div class="conversion-row">
+                        <span class="value">${mEq}</span>
+                        <span class="unit">mEq</span>
+                        <span class="equals">=</span>
+                        <span class="value">${mg}</span>
+                        <span class="unit">mg</span>
+                        <span class="equals">=</span>
+                        <span class="value">${ml}</span>
+                        <span class="unit">ml</span>
+                    </div>
+                    <div class="compound-info">
+                        ${formatCompoundName(compoundName)} ${concentration}%
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById("mEqToMgResult").innerHTML = resultText;
+            window.lastCalculationResult = `${mEq} mEq = ${mg} mg = ${ml} ml (${formatCompoundName(compoundName)} ${concentration}%)`;
+        }
+
+        // تابع تعیین mEq/ml برای هر غلظت
+        function getMEqPerMl(compoundName, concentration) {
+            switch (compoundName) {
+                case "Potassium Chloride":
+                    if (concentration === 10) return 1;
+                    if (concentration === 7.5) return 0.75;
+                    if (concentration === 15) return 2;
+                    break;
+                case "Sodium Chloride":
+                    if (concentration === 0.9) return 0.154;
+                    if (concentration === 3) return 0.513;
+                    if (concentration === 5) return 0.855;
+                    break;
+                case "Sodium Bicarbonate":
+                    if (concentration === 8.4) return 1;
+                    if (concentration === 7.5) return 0.892;
+                    if (concentration === 4.2) return 0.5;
+                    break;
+                case "Calcium Chloride":
+                    if (concentration === 10) return 1.36;
+                    if (concentration === 5) return 0.68;
+                    break;
+                case "Magnesium Sulfate":
+                    if (concentration === 50) return 4;
+                    if (concentration === 20) return 1.6;
+                    break;
+                case "Potassium Phosphate":
+                    return 4.4;
+                case "Calcium Gluconate":
+                    return 0.45;
+                default:
+                    return 1;
+            }
+        }
+
+        // تابع فرمت‌دهی نام ترکیب برای نمایش
+        function formatCompoundName(name) {
+            return name.split(' ')
+                       .map(word => word[0].toUpperCase() + word.slice(1).toLowerCase())
+                       .join(' ');
         }
 
         if ('serviceWorker' in navigator) {
