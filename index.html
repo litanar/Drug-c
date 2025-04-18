@@ -475,7 +475,7 @@
                         </select>
                     </div>
                     
-                    <label for="syringeVolume">حجم سرنگ یا میکروست (سی‌سی):</label>
+                    <label for="syringeVolume">حجم سرنگ یا میکروست (میلی‌لیتر):</label>
                     <input type="number" id="syringeVolume" placeholder=" حجم سرنگ / میکروست">
                     
                     <label for="prescribedDose">دوز تجویزی:</label>
@@ -534,7 +534,7 @@
                     <label for="requiredDose">دوز مورد نیاز (میلی‌گرم):</label>
                     <input type="number" id="requiredDose" placeholder="دوز مورد نیاز">
                     
-                    <button onclick="calculatePercentageDrug()">محاسبه سی‌سی مورد نیاز</button>
+                    <button onclick="calculatePercentageDrug()">محاسبه میلی‌لیتر مورد نیاز</button>
                     <div class="result" id="percentageDrugResult"></div>
                     
                     <div class="share-icons">
@@ -612,18 +612,18 @@
                 </div>
             </div>
             
-            <!-- محاسبات اطفال -->
+            <!-- محاسبات اطفال (هدایت به سایت) -->
             <div class="box">
-                <div class="box-header">
+                <div class="box-header" onclick="window.open('https://paedi.icu/', '_blank')">
                     <i class="fas fa-baby"></i>
                     <div class="box-title">محاسبات دارویی اورژانس و مراقبت های ویژه در کودکان</div>
                 </div>
                 <div class="box-content">
-                    <label for="volumeCC">حجم بر حسب سی‌سی:</label>
-                    <input type="number" id="volumeCC" placeholder="مثال: 0.175">
-                    
-                    <button onclick="calculatePediatricDrug()">محاسبه واحدهای انسولین</button>
-                    <div class="result" id="pediatricDrugResult"></div>
+                    <p style="text-align: center; padding: 20px;">
+                        برای محاسبات تخصصی اطفال به سایت زیر مراجعه کنید:
+                        <br><br>
+                        <a href="https://paedi.icu/" target="_blank" style="color: #2196F3; font-weight: bold;">paedi.icu</a>
+                    </p>
                     
                     <div class="share-icons">
                         <a href="#" class="whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i></a>
@@ -743,12 +743,23 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
     </div>
 
     <script>
+        // تابع کمکی برای نمایش اعداد به صورت رند
+        function formatNumber(num) {
+            return num % 1 === 0 ? num.toString() : num.toFixed(2);
+        }
+
         // مدیریت باز و بسته شدن باکس‌ها
         document.addEventListener('DOMContentLoaded', function() {
             // Event Delegation برای مدیریت کلیک روی هدر باکس‌ها
             document.querySelector('.boxes-container').addEventListener('click', function(e) {
                 const header = e.target.closest('.box-header');
                 if (!header) return;
+                
+                // اگر باکس اطفال بود، کاربر را به سایت هدایت کن
+                if (header.parentElement.querySelector('.fa-baby')) {
+                    window.open('https://paedi.icu/', '_blank');
+                    return;
+                }
                 
                 const box = header.parentElement;
                 const container = box.parentElement;
@@ -864,9 +875,9 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             const infusionRate = (prescribedDoseMgOrUPerHour / drugDoseMgOrU) * syringeVolume;
             
             if (infusionMethod === 'pump') {
-                resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} cc/h (پمپ)`;
+                resultText = `نرخ تزریق: ${formatNumber(infusionRate)} ml/h (پمپ)`;
             } else {
-                resultText = `نرخ تزریق: ${infusionRate.toFixed(2)} gtt/min (میکروست)`;
+                resultText = `نرخ تزریق: ${formatNumber(infusionRate)} gtt/min (میکروست)`;
             }
 
             document.getElementById('drugResult').innerText = resultText;
@@ -883,8 +894,8 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
                 return;
             }
             
-            const ccNeeded = (requiredDose / (drugPercentage * 10)).toFixed(2);
-            const resultText = `سی‌سی مورد نیاز: ${ccNeeded} سی‌سی`;
+            const mlNeeded = (requiredDose / (drugPercentage * 10));
+            const resultText = `میلی‌لیتر مورد نیاز: ${formatNumber(mlNeeded)} ml`;
             document.getElementById('percentageDrugResult').innerText = resultText;
             window.lastCalculationResult = resultText;
         }
@@ -901,7 +912,7 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             }
             
             const dropsPerMinute = (fluidVolume * dripSet) / (infusionTime * 60);
-            const resultText = `قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
+            const resultText = `قطرات بر دقیقه: ${formatNumber(dropsPerMinute)} gtt/min`;
             document.getElementById('fluidResult').innerText = resultText;
             window.lastCalculationResult = resultText;
         }
@@ -917,23 +928,8 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             }
             
             const dropsPerMinute = (microsetVolume * 60) / (microsetInfusionTime * 60);
-            const resultText = `قطرات بر دقیقه: ${dropsPerMinute.toFixed(2)}`;
+            const resultText = `قطرات بر دقیقه: ${formatNumber(dropsPerMinute)} gtt/min`;
             document.getElementById('microsetResult').innerText = resultText;
-            window.lastCalculationResult = resultText;
-        }
-        
-        // تابع محاسبه اطفال
-        function calculatePediatricDrug() {
-            const volumeCC = parseFloat(document.getElementById('volumeCC').value);
-            
-            if (isNaN(volumeCC)) {
-                document.getElementById('pediatricDrugResult').innerText = "لطفاً حجم را به درستی وارد کنید.";
-                return;
-            }
-            
-            const insulinUnits = (volumeCC / 0.02).toFixed(2);
-            const resultText = `واحدهای انسولین: ${insulinUnits}`;
-            document.getElementById('pediatricDrugResult').innerText = resultText;
             window.lastCalculationResult = resultText;
         }
         
@@ -948,9 +944,9 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             }
 
             const [molarMass, valence] = compound.split(',').map(Number);
-            const mg = (mEq * (molarMass / valence)).toFixed(2);
+            const mg = (mEq * (molarMass / valence));
 
-            const resultText = `${mEq} mEq = ${mg} mg`;
+            const resultText = `${mEq} mEq = ${formatNumber(mg)} mg`;
             document.getElementById('mEqToMgResult').innerText = resultText;
             window.lastCalculationResult = resultText;
         }
@@ -972,12 +968,12 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
                 return;
             }
             
-            const V_replace = (V_total * (C_desired - C_current) / (C_stock - C_current)).toFixed(1);
+            const V_replace = (V_total * (C_desired - C_current) / (C_stock - C_current));
             
             document.getElementById('conversionResult').innerHTML = `
-                <p>حجم جایگزینی: <strong>${V_replace} میلی‌لیتر</strong></p>
-                <p>1. ${V_replace} میلی‌لیتر از محلول ${C_current}% خارج کنید</p>
-                <p>2. ${V_replace} میلی‌لیتر از محلول ${C_stock}% اضافه کنید</p>
+                <p>حجم جایگزینی: <strong>${formatNumber(V_replace)} ml</strong></p>
+                <p>1. ${formatNumber(V_replace)} ml از محلول ${C_current}% خارج کنید</p>
+                <p>2. ${formatNumber(V_replace)} ml از محلول ${C_stock}% اضافه کنید</p>
             `;
             
             window.lastConversionResult = document.getElementById('conversionResult').innerText;
@@ -1097,7 +1093,6 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
-
         
     </script>
 </body>
