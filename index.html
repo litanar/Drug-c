@@ -199,60 +199,97 @@
         }
         
         /* تبلیغات بهبود یافته */
-        .nurse-plus-section {
+        .ad-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .ad-box {
             background-color: #fff;
             border-radius: 12px;
             padding: 15px;
-            margin-top: 20px;
             text-align: center;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
             border: 1px solid #eee;
-            transition: all 0.3s ease;
+            font-family: 'Yekan', sans-serif;
         }
-        
-        .nurse-plus-section.hidden {
-            opacity: 0;
-            visibility: hidden;
-            height: 0;
-            padding: 0;
-            margin: 0;
-            border: none;
-            overflow: hidden;
-        }
-        
-        .nurse-plus-section p {
+
+        .ad-box p {
             font-size: 15px;
             margin-bottom: 15px;
             font-weight: bold;
+            color: #333;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.5;
         }
-        
-        .nurse-plus-section a {
-            text-decoration: none;
-        }
-        
-        .nurse-plus-btn {
+
+        .ad-btn {
             background-color: #2196F3;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 10px 20px;
+            padding: 10px 15px;
             border-radius: 25px;
             color: white;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
-            transition: all 0.3s;
             border: none;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 100%;
+            font-family: 'Yekan', sans-serif;
         }
-        
-        .nurse-plus-btn:hover {
+
+        .ad-btn:hover {
             background-color: #0d8aee;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        
+
+        /* استایل برای موبایل */
+        @media (max-width: 600px) {
+            .ad-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .ad-box p {
+                font-size: 14px;
+            }
+            
+            /* فقط باکس غلظت (باکس هفتم) را عریض میکنیم */
+            .box:nth-child(7) {
+                grid-column: span 2;
+            }
+            
+            /* حالت فعال برای باکس در موبایل */
+            .box.active {
+                width: calc(100% - 30px);
+                left: 15px;
+                right: 15px;
+            }
+        }
+
+        /* تم تاریک */
+        .dark-theme .ad-box {
+            background-color: #2d2d2d;
+            border-color: #444;
+        }
+
+        .dark-theme .ad-box p {
+            color: #e0e0e0;
+        }
+
+        /* استایل جدید برای مخفی کردن تبلیغات و فوتر */
+        .hidden-section {
+            display: none !important;
+        }
+
         /* دکمه تغییر تم */
         #themeToggle {
             position: fixed;
@@ -321,32 +358,35 @@
         /* فوتتر بهبود یافته */
         footer {
             text-align: center;
-            padding: 20px;
+            padding: 20px 0;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            border-radius: 0;
-            margin: 20px -15px -15px -15px;
-            width: calc(100% + 30px);
-            box-shadow: none;
-            border: none;
+            margin-top: 20px;
             color: white;
-            transition: all 0.3s ease;
+            width: 100%;
+            border-radius: 12px;
         }
         
-        footer.hidden {
-            opacity: 0;
-            visibility: hidden;
-            height: 0;
-            padding: 0;
-            margin: 0;
-            border: none;
-            overflow: hidden;
+        .footer-content {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 15px;
         }
         
-        footer div {
+        .footer-supervisor, .footer-designer {
             margin: 10px 0;
             font-size: 14px;
             color: #e0e0e0;
             line-height: 1.6;
+        }
+        
+        .footer-supervisor {
+            font-weight: bold;
+            color: #ffffff;
+            font-size: 15px;
+        }
+        
+        .footer-designer {
+            font-style: italic;
         }
         
         .social-links {
@@ -478,10 +518,6 @@
             background-color: #f5f5f5;
             color: #333;
         }
-        .dark-theme .nurse-plus-section {
-            background-color: #2d2d2d;
-            border-color: #444;
-        }
         .dark-theme footer {
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             border-color: rgba(255, 255, 255, 0.1);
@@ -502,20 +538,6 @@
             color: #ffffff;
         }
 
-        @media (max-width: 600px) {
-            /* فقط باکس غلظت (باکس هفتم) را عریض میکنیم */
-            .box:nth-child(7) {
-                grid-column: span 2;
-            }
-            
-            /* حالت فعال برای باکس در موبایل */
-            .box.active {
-                width: calc(100% - 30px);
-                left: 15px;
-                right: 15px;
-            }
-        }
-        
         html, body {
             overflow-x: hidden;
         }
@@ -785,53 +807,66 @@
             </div>
         </div>
         
-        <!-- بخش تبلیغات بهبود یافته -->
-        <div class="nurse-plus-section" id="adSection">
-            <p>آموزش اورژانس و مراقبت‌های ویژه با دکتر امیر سالاری</p>
-            <a href="https://www.aparat.com/amir.salari2136" target="_blank">
-                <button class="nurse-plus-btn">
-                    <i class="fas fa-film"></i>
-                    مشاهده ویدیوهای آموزشی
-                </button>
-            </a>
+        <!-- بخش تبلیغات دوگانه -->
+        <div class="ad-container" id="adSection">
+            <div class="ad-box">
+                <p>آموزش اورژانس و مراقبت‌های ویژه با دکتر امیر سالاری</p>
+                <a href="https://www.aparat.com/amir.salari2136" target="_blank">
+                    <button class="ad-btn">
+                        <i class="fas fa-film"></i>
+                        مشاهده ویدیوها
+                    </button>
+                </a>
+            </div>
+            
+            <div class="ad-box">
+                <p>دانلود محصولات آموزشی (اسلاید، پوستر، کتاب، پادکست)</p>
+                <a href="https://amirsalari.ir/product-category/educationalproductsdownload/" target="_blank">
+                    <button class="ad-btn">
+                        <i class="fas fa-book-open"></i>
+                        دانلود محصولات
+                    </button>
+                </a>
+            </div>
         </div>
         
         <!-- فوتتر بهبود یافته -->
         <footer>
-            <div style="font-weight: bold; color: #ffffff; font-size: 15px;">
-                Supervised by: Dr. Amir Salari<br>
-                Emergency & Critical Care Instructor, Tehran University of Medical Sciences
+            <div class="footer-content">
+                <div class="footer-supervisor">
+                    <strong>Supervised by:</strong> Dr. Amir Salari<br>
+                    Emergency & Critical Care Instructor, Tehran University of Medical Sciences
+                </div>
+                
+                <div class="footer-designer">
+                    Designed and coded by: Tavakol Piri<br>
+                    Medical Ward Nurse, Imam Khomeini Hospital Complex
+                </div>
+                
+                <div class="social-links">
+                    <a href="https://wa.me/989124065510" target="_blank" class="whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="https://t.me/amirsalari" target="_blank" class="telegram">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                    <a href="https://instagram.com/_MedMate" target="_blank" class="instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+                
+                <div class="datetime" id="datetime"></div>
             </div>
-            
-            <div style="margin-top: 10px; font-style: italic;">
-                Designed and coded by: Tavakol Piri<br>
-                Medical Ward Nurse, Imam Khomeini Hospital Complex
-            </div>
-            
-            <div class="social-links">
-                <a href="https://wa.me/989124065510" target="_blank" class="whatsapp">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-                <a href="https://t.me/amirsalari" target="_blank" class="telegram">
-                    <i class="fab fa-telegram"></i>
-                </a>
-                <a href="https://instagram.com/_MedMate" target="_blank" class="instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-            </div>
-            
-            <div class="datetime" id="datetime"></div>
         </footer>
     </div>
 
-    <!-- اسکریپت‌های بدون تغییر -->
     <script>
         // تابع کمکی برای نمایش اعداد به صورت رند
         function formatNumber(num) {
             return num % 1 === 0 ? num.toString() : num.toFixed(2);
         }
 
-        // مدیریت باز و بسته شدن باکس‌ها
+        // مدیریت باز و بسته شدن باکس‌ها (ویرایش شده)
         document.addEventListener('DOMContentLoaded', function() {
             // Event Delegation برای مدیریت کلیک روی هدر باکس‌ها
             document.querySelector('.boxes-container').addEventListener('click', function(e) {
@@ -853,8 +888,8 @@
                 if (box.classList.contains('active')) {
                     box.classList.remove('active');
                     container.classList.remove('active');
-                    adSection.classList.remove('hidden');
-                    footer.classList.remove('hidden');
+                    adSection.classList.remove('hidden-section');
+                    footer.classList.remove('hidden-section');
                     return;
                 }
                 
@@ -869,8 +904,8 @@
                 // سپس باکس کلیک شده را باز کن
                 box.classList.add('active');
                 container.classList.add('active');
-                adSection.classList.add('hidden');
-                footer.classList.add('hidden');
+                adSection.classList.add('hidden-section');
+                footer.classList.add('hidden-section');
                 
                 // اسکرول به موقعیت باکس
                 box.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -891,7 +926,7 @@
             }
         });
 
-        // تابع بستن باکس
+        // تابع بستن باکس (ویرایش شده)
         function closeBox(button) {
             const box = button.closest('.box');
             const container = box.parentElement;
@@ -899,8 +934,8 @@
             const footer = document.querySelector('footer');
             box.classList.remove('active');
             container.classList.remove('active');
-            adSection.classList.remove('hidden');
-            footer.classList.remove('hidden');
+            adSection.classList.remove('hidden-section');
+            footer.classList.remove('hidden-section');
         }
 
         // تابع نمایش یا مخفی کردن باکس وزن
