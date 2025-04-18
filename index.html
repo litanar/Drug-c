@@ -541,6 +541,21 @@
         html, body {
             overflow-x: hidden;
         }
+
+        /* استایل جدید برای انتخاب واحد زمان */
+        .time-input-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .time-input-container input {
+            flex: 1;
+        }
+        
+        .time-input-container select {
+            width: 100px;
+        }
     </style>
 </head>
 <body>
@@ -657,8 +672,14 @@
                     <label for="fluidVolume">حجم سرم (میلی‌لیتر):</label>
                     <input type="number" id="fluidVolume" placeholder="حجم سرم">
                     
-                    <label for="infusionTime">زمان تزریق (ساعت):</label>
-                    <input type="number" id="infusionTime" placeholder="زمان تزریق">
+                    <label for="infusionTimeValue">زمان تزریق:</label>
+                    <div class="time-input-container">
+                        <input type="number" id="infusionTimeValue" placeholder="مقدار زمان" min="0.1" step="0.1">
+                        <select id="infusionTimeUnit" onchange="adjustTimeStep()">
+                            <option value="hours">ساعت</option>
+                            <option value="minutes">دقیقه</option>
+                        </select>
+                    </div>
                     
                     <label for="dripSet">نوع ست سرم:</label>
                     <select id="dripSet">
@@ -692,8 +713,14 @@
                     <label for="microsetVolume">حجم میکروست (میلی‌لیتر):</label>
                     <input type="number" id="microsetVolume" placeholder="حجم میکروست">
                     
-                    <label for="microsetInfusionTime">زمان تزریق (ساعت):</label>
-                    <input type="number" id="microsetInfusionTime" placeholder="زمان تزریق">
+                    <label for="microsetInfusionTimeValue">زمان تزریق:</label>
+                    <div class="time-input-container">
+                        <input type="number" id="microsetInfusionTimeValue" placeholder="مقدار زمان" min="0.1" step="0.1">
+                        <select id="microsetInfusionTimeUnit" onchange="adjustMicrosetTimeStep()">
+                            <option value="hours">ساعت</option>
+                            <option value="minutes">دقیقه</option>
+                        </select>
+                    </div>
                     
                     <button onclick="calculateMicroset()">محاسبه </button>
                     <div class="result" id="microsetResult"></div>
@@ -945,6 +972,38 @@
             weightInput.style.display = prescribedDoseUnit === 'mcg/kg/min' ? 'block' : 'none';
         }
         
+        // تابع برای تنظیم step مناسب برای input زمان سرم
+        function adjustTimeStep() {
+            const unit = document.getElementById('infusionTimeUnit').value;
+            const timeInput = document.getElementById('infusionTimeValue');
+            
+            if (unit === 'minutes') {
+                timeInput.step = '1';
+                timeInput.min = '1';
+                timeInput.placeholder = 'مثال: 30';
+            } else {
+                timeInput.step = '0.1';
+                timeInput.min = '0.1';
+                timeInput.placeholder = 'مثال: 1.5';
+            }
+        }
+
+        // تابع برای تنظیم step مناسب برای input زمان میکروست
+        function adjustMicrosetTimeStep() {
+            const unit = document.getElementById('microsetInfusionTimeUnit').value;
+            const timeInput = document.getElementById('microsetInfusionTimeValue');
+            
+            if (unit === 'minutes') {
+                timeInput.step = '1';
+                timeInput.min = '1';
+                timeInput.placeholder = 'مثال: 30';
+            } else {
+                timeInput.step = '0.1';
+                timeInput.min = '0.1';
+                timeInput.placeholder = 'مثال: 1.5';
+            }
+        }
+        
         // تابع محاسبه دارو (با تغییر ترتیب عدد و واحد)
         function calculateDrug() {
             const drugDose = parseFloat(document.getElementById('drugDose').value);
@@ -1026,15 +1085,24 @@
         // تابع محاسبه سرم (با تغییر ترتیب عدد و واحد)
         function calculateFluid() {
             const fluidVolume = parseFloat(document.getElementById('fluidVolume').value);
-            const infusionTime = parseFloat(document.getElementById('infusionTime').value);
+            const infusionTimeValue = parseFloat(document.getElementById('infusionTimeValue').value);
+            const infusionTimeUnit = document.getElementById('infusionTimeUnit').value;
             const dripSet = parseFloat(document.getElementById('dripSet').value);
             
-            if (isNaN(fluidVolume) || isNaN(infusionTime)) {
+            if (isNaN(fluidVolume) || isNaN(infusionTimeValue)) {
                 document.getElementById('fluidResult').innerText = "لطفاً حجم سرم و زمان تزریق را وارد کنید.";
                 return;
             }
             
-            const dropsPerMinute = (fluidVolume * dripSet) / (infusionTime * 60);
+            // تبدیل زمان به دقیقه
+            const totalMinutes = infusionTimeUnit === 'hours' ? infusionTimeValue * 60 : infusionTimeValue;
+            
+            if (totalMinutes <= 0) {
+                document.getElementById('fluidResult').innerText = "زمان تزریق باید بیشتر از صفر باشد.";
+                return;
+            }
+            
+            const dropsPerMinute = (fluidVolume * dripSet) / totalMinutes;
             const resultText = `قطرات بر دقیقه: ${formatNumber(dropsPerMinute)} gtt/min`;
             document.getElementById('fluidResult').innerText = resultText;
             window.lastCalculationResult = resultText;
@@ -1043,14 +1111,24 @@
         // تابع محاسبه میکروست (با تغییر ترتیب عدد و واحد)
         function calculateMicroset() {
             const microsetVolume = parseFloat(document.getElementById('microsetVolume').value);
-            const microsetInfusionTime = parseFloat(document.getElementById('microsetInfusionTime').value);
+            const microsetInfusionTimeValue = parseFloat(document.getElementById('microsetInfusionTimeValue').value);
+            const microsetInfusionTimeUnit = document.getElementById('microsetInfusionTimeUnit').value;
             
-            if (isNaN(microsetVolume) || isNaN(microsetInfusionTime)) {
-                document.getElementById('microsetResult').innerText = "لطفاً حجم و زمان تزریق را وارد کنید.";
+            if (isNaN(microsetVolume) || isNaN(microsetInfusionTimeValue)) {
+                document.getElementById('microsetResult').innerText = "لطفاً حجم میکروست و زمان تزریق را وارد کنید.";
                 return;
             }
             
-            const dropsPerMinute = (microsetVolume * 60) / (microsetInfusionTime * 60);
+            // تبدیل زمان به دقیقه
+            const totalMinutes = microsetInfusionTimeUnit === 'hours' ? microsetInfusionTimeValue * 60 : microsetInfusionTimeValue;
+            
+            if (totalMinutes <= 0) {
+                document.getElementById('microsetResult').innerText = "زمان تزریق باید بیشتر از صفر باشد.";
+                return;
+            }
+            
+            // محاسبه قطرات بر دقیقه برای میکروست (60 قطره در میلی‌لیتر)
+            const dropsPerMinute = (microsetVolume * 60) / totalMinutes;
             const resultText = `قطرات بر دقیقه: ${formatNumber(dropsPerMinute)} gtt/min`;
             document.getElementById('microsetResult').innerText = resultText;
             window.lastCalculationResult = resultText;
