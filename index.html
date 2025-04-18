@@ -476,7 +476,7 @@
                     </div>
                     
                     <label for="syringeVolume">حجم سرنگ یا میکروست (سی‌سی):</label>
-                    <input type="number" id="syringeVolume" placeholder="حجم سرنگ">
+                    <input type="number" id="syringeVolume" placeholder=" حجم سرنگ / میکروست">
                     
                     <label for="prescribedDose">دوز تجویزی:</label>
                     <div style="display: flex; gap: 8px;">
@@ -525,7 +525,7 @@
             <div class="box">
                 <div class="box-header">
                     <i class="fas fa-percentage"></i>
-                    <div class="box-title">داروهای درصدی</div>
+                    <div class="box-title">محاسبات داروهای درصدی</div>
                 </div>
                 <div class="box-content">
                     <label for="drugPercentage">درصد دارو:</label>
@@ -553,7 +553,7 @@
             <div class="box">
                 <div class="box-header">
                     <i class="fas fa-tint"></i>
-                    <div class="box-title">محاسبات سرم</div>
+                    <div class="box-title">محاسبات میزان قطرات سرم</div>
                 </div>
                 <div class="box-content">
                     <label for="fluidVolume">حجم سرم (میلی‌لیتر):</label>
@@ -569,7 +569,7 @@
                         <option value="20">۲۰ قطره/میلی‌لیتر</option>
                     </select>
                     
-                    <button onclick="calculateFluid()">محاسبه سرم</button>
+                    <button onclick="calculateFluid()">محاسبه</button>
                     <div class="result" id="fluidResult"></div>
                     
                     <div class="share-icons">
@@ -588,7 +588,7 @@
             <div class="box">
                 <div class="box-header">
                     <i class="fas fa-tint-slash"></i>
-                    <div class="box-title">محاسبات میکروست</div>
+                    <div class="box-title">محاسبات میزان قطرات میکروست</div>
                 </div>
                 <div class="box-content">
                     <label for="microsetVolume">حجم میکروست (میلی‌لیتر):</label>
@@ -597,7 +597,7 @@
                     <label for="microsetInfusionTime">زمان تزریق (ساعت):</label>
                     <input type="number" id="microsetInfusionTime" placeholder="زمان تزریق">
                     
-                    <button onclick="calculateMicroset()">محاسبه میکروست</button>
+                    <button onclick="calculateMicroset()">محاسبه </button>
                     <div class="result" id="microsetResult"></div>
                     
                     <div class="share-icons">
@@ -616,7 +616,7 @@
             <div class="box">
                 <div class="box-header">
                     <i class="fas fa-baby"></i>
-                    <div class="box-title">محاسبات اطفال</div>
+                    <div class="box-title">محاسبات دارویی اورژانس و مراقبت های ویژه در کودکان</div>
                 </div>
                 <div class="box-content">
                     <label for="volumeCC">حجم بر حسب سی‌سی:</label>
@@ -678,7 +678,7 @@
             <div class="box">
                 <div class="box-header">
                     <i class="fas fa-flask"></i>
-                    <div class="box-title">تغییر غلظت</div>
+                    <div class="box-title"> تغییرغلظت محلول ها</div>
                 </div>
                 <div class="box-content">
                     <label for="currentConc">غلظت محلول موجود (درصد):</label>
