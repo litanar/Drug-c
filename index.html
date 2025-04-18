@@ -501,14 +501,12 @@
         }
 
         @media (max-width: 600px) {
-            .boxes-container {
-                grid-template-columns: 1fr;
-            }
-            
+            /* فقط باکس غلظت (باکس هفتم) را عریض میکنیم */
             .box:nth-child(7) {
-                grid-column: span 1;
+                grid-column: span 2;
             }
             
+            /* حالت فعال برای باکس در موبایل */
             .box.active {
                 width: calc(100% - 30px);
                 left: 15px;
