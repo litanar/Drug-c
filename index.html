@@ -198,7 +198,7 @@
             margin-top: 10px;
         }
         
-        /* تبلیغات */
+        /* تبلیغات بهبود یافته */
         .nurse-plus-section {
             background-color: #fff;
             border-radius: 12px;
@@ -221,8 +221,9 @@
         }
         
         .nurse-plus-section p {
-            font-size: 14px;
+            font-size: 15px;
             margin-bottom: 15px;
+            font-weight: bold;
         }
         
         .nurse-plus-section a {
@@ -231,19 +232,25 @@
         
         .nurse-plus-btn {
             background-color: #2196F3;
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 25px;
             color: white;
-            font-size: 14px;
+            font-size: 15px;
+            font-weight: bold;
             transition: all 0.3s;
             border: none;
             cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         .nurse-plus-btn:hover {
             background-color: #0d8aee;
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         
         /* دکمه تغییر تم */
@@ -311,17 +318,17 @@
         .twitter { color: #1da1f2 !important; }
         .sms { color: #34b7f1 !important; }
         
-        /* فوتتر جدید */
+        /* فوتتر بهبود یافته */
         footer {
-            position: relative;
-            z-index: 10;
             text-align: center;
-            margin-top: auto;
             padding: 20px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 0;
+            margin: 20px -15px -15px -15px;
+            width: calc(100% + 30px);
+            box-shadow: none;
+            border: none;
+            color: white;
             transition: all 0.3s ease;
         }
         
@@ -335,15 +342,10 @@
             overflow: hidden;
         }
         
-        footer:hover {
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
-        }
-        
         footer div {
             margin: 10px 0;
             font-size: 14px;
-            color: #555;
+            color: #e0e0e0;
             line-height: 1.6;
         }
         
@@ -355,10 +357,10 @@
         }
         
         .social-links a {
-            color: #555;
+            color: #e0e0e0;
             font-size: 22px;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -378,7 +380,7 @@
         
         .datetime {
             font-size: 13px;
-            color: #777;
+            color: #bbbbbb;
             margin-top: 15px;
             font-family: 'Yekan', sans-serif;
         }
@@ -477,11 +479,11 @@
             color: #333;
         }
         .dark-theme .nurse-plus-section {
-            background-color: #fff;
-            color: #333;
+            background-color: #2d2d2d;
+            border-color: #444;
         }
         .dark-theme footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             border-color: rgba(255, 255, 255, 0.1);
         }
         .dark-theme footer div {
@@ -783,22 +785,23 @@
             </div>
         </div>
         
-        <!-- بخش تبلیغات -->
+        <!-- بخش تبلیغات بهبود یافته -->
         <div class="nurse-plus-section" id="adSection">
-            <p> آموزش اورژانس و مراقبت های ویژه با دکتر امیر سالاری </p>
+            <p>آموزش اورژانس و مراقبت‌های ویژه با دکتر امیر سالاری</p>
             <a href="https://www.aparat.com/amir.salari2136" target="_blank">
-                <button class="nurse-plus-btn">مشاهده ی ویدئوهای آموزشی</button>
+                <button class="nurse-plus-btn">
+                    <i class="fas fa-film"></i>
+                    مشاهده ویدیوهای آموزشی
+                </button>
             </a>
         </div>
         
-        <!-- فوتتر جدید -->
+        <!-- فوتتر بهبود یافته -->
         <footer>
-            <div style="font-weight: bold; color: #4a6baf; font-size: 15px;">
+            <div style="font-weight: bold; color: #ffffff; font-size: 15px;">
                 Supervised by: Dr. Amir Salari<br>
                 Emergency & Critical Care Instructor, Tehran University of Medical Sciences
             </div>
-            
-    
             
             <div style="margin-top: 10px; font-style: italic;">
                 Designed and coded by: Tavakol Piri<br>
@@ -808,10 +811,9 @@
             <div class="social-links">
                 <a href="https://wa.me/989124065510" target="_blank" class="whatsapp">
                     <i class="fab fa-whatsapp"></i>
-                    
-                    <a href="https://t.me/amirsalari" target="_blank" class=Telegram">
+                </a>
+                <a href="https://t.me/amirsalari" target="_blank" class="telegram">
                     <i class="fab fa-telegram"></i>
-                    
                 </a>
                 <a href="https://instagram.com/_MedMate" target="_blank" class="instagram">
                     <i class="fab fa-instagram"></i>
@@ -822,6 +824,7 @@
         </footer>
     </div>
 
+    <!-- اسکریپت‌های بدون تغییر -->
     <script>
         // تابع کمکی برای نمایش اعداد به صورت رند
         function formatNumber(num) {
