@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-pwa-cache-v59'; // نسخه را دستی افزایش دهید
+const CACHE_NAME = 'my-pwa-cache-v51'; // نسخه را دستی افزایش دهید
 const ASSETS = [
   '/',
   '/index.html',
