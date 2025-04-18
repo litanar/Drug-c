@@ -38,6 +38,9 @@
             max-width: 500px;
             margin: 20px auto;
             padding: 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         h2 {
@@ -204,15 +207,17 @@
             text-align: center;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
             border: 1px solid #eee;
+            transition: all 0.3s ease;
         }
         
         .nurse-plus-section.hidden {
-            visibility: hidden;
             opacity: 0;
+            visibility: hidden;
             height: 0;
             padding: 0;
             margin: 0;
             border: none;
+            overflow: hidden;
         }
         
         .nurse-plus-section p {
@@ -308,14 +313,26 @@
         
         /* فوتتر جدید */
         footer {
+            position: relative;
+            z-index: 10;
             text-align: center;
-            margin-top: 30px;
+            margin-top: auto;
             padding: 20px;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
+        }
+        
+        footer.hidden {
+            opacity: 0;
+            visibility: hidden;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            border: none;
+            overflow: hidden;
         }
         
         footer:hover {
@@ -484,9 +501,23 @@
         }
 
         @media (max-width: 600px) {
+            .boxes-container {
+                grid-template-columns: 1fr;
+            }
+            
             .box:nth-child(7) {
                 grid-column: span 1;
             }
+            
+            .box.active {
+                width: calc(100% - 30px);
+                left: 15px;
+                right: 15px;
+            }
+        }
+        
+        html, body {
+            overflow-x: hidden;
         }
     </style>
 </head>
@@ -818,12 +849,14 @@
                 const box = header.parentElement;
                 const container = box.parentElement;
                 const adSection = document.getElementById('adSection');
+                const footer = document.querySelector('footer');
                 
                 // اگر باکس از قبل فعال است، آن را ببند
                 if (box.classList.contains('active')) {
                     box.classList.remove('active');
                     container.classList.remove('active');
                     adSection.classList.remove('hidden');
+                    footer.classList.remove('hidden');
                     return;
                 }
                 
@@ -839,6 +872,7 @@
                 box.classList.add('active');
                 container.classList.add('active');
                 adSection.classList.add('hidden');
+                footer.classList.add('hidden');
                 
                 // اسکرول به موقعیت باکس
                 box.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -864,9 +898,11 @@
             const box = button.closest('.box');
             const container = box.parentElement;
             const adSection = document.getElementById('adSection');
+            const footer = document.querySelector('footer');
             box.classList.remove('active');
             container.classList.remove('active');
             adSection.classList.remove('hidden');
+            footer.classList.remove('hidden');
         }
 
         // تابع نمایش یا مخفی کردن باکس وزن
@@ -1131,23 +1167,22 @@
             });
         }
 
-if ('serviceWorker' in navigator) {
-  // ثبت سرویس ورکر بدون ریلود خودکار
-  navigator.serviceWorker.register('/sw.js').then(reg => {
-    // فقط هنگام وجود آپدیت، ریلود کن
-    reg.addEventListener('updatefound', () => {
-      const newWorker = reg.installing;
-      newWorker.addEventListener('statechange', () => {
-        if (newWorker.state === 'activated') {
-          if (confirm('نسخه جدید آماده است! می‌خواهید صفحه رفرش شود؟')) {
-            window.location.reload();
-          }
+        if ('serviceWorker' in navigator) {
+          // ثبت سرویس ورکر بدون ریلود خودکار
+          navigator.serviceWorker.register('/sw.js').then(reg => {
+            // فقط هنگام وجود آپدیت، ریلود کن
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'activated') {
+                  if (confirm('نسخه جدید آماده است! می‌خواهید صفحه رفرش شود؟')) {
+                    window.location.reload();
+                  }
+                }
+              });
+            });
+          });
         }
-      });
-    });
-  });
-}
-        
     </script>
 </body>
 </html>
