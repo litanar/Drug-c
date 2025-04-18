@@ -97,7 +97,11 @@
         .box:nth-child(4) { background-color: #fce4ec; border-color: #f8bbd0; } /* صورتی روشن */
         .box:nth-child(5) { background-color: #e8f5e9; border-color: #c8e6c9; } /* سبز */
         .box:nth-child(6) { background-color: #f3e5f5; border-color: #e1bee7; } /* بنفش */
-        .box:nth-child(7) { background-color: #e0f7fa; border-color: #b2ebf2; } /* فیروزه‌ای */
+        .box:nth-child(7) { 
+            background-color: #e0f7fa; 
+            border-color: #b2ebf2; 
+            grid-column: span 2; /* باکس غلظت عریضتر */
+        } /* فیروزه‌ای */
         
         .box:hover {
             transform: translateY(-3px);
@@ -302,34 +306,64 @@
         .twitter { color: #1da1f2 !important; }
         .sms { color: #34b7f1 !important; }
         
-        /* فوتتر */
+        /* فوتتر جدید */
         footer {
             text-align: center;
             margin-top: 30px;
-            font-size: 13px;
-            color: #666;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        footer:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        footer div {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
         }
         
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin: 10px 0;
+            gap: 20px;
+            margin: 15px 0;
         }
         
         .social-links a {
             color: #555;
-            font-size: 18px;
-            transition: all 0.3s;
+            font-size: 22px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
         .social-links a:hover {
-            transform: scale(1.2);
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
+        .social-links .whatsapp:hover { color: #25D366 !important; background: rgba(37, 211, 102, 0.1); }
+        .social-links .instagram:hover { color: #E4405F !important; background: rgba(228, 64, 95, 0.1); }
+        
         .datetime {
-            font-size: 12px;
-            color: #888;
+            font-size: 13px;
+            color: #777;
+            margin-top: 15px;
+            font-family: 'Yekan', sans-serif;
         }
         
         /* گروه رادیو باتن‌ها */
@@ -430,6 +464,10 @@
             color: #333;
         }
         .dark-theme footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .dark-theme footer div {
             color: #e0e0e0;
         }
         .dark-theme .datetime {
@@ -437,11 +475,18 @@
         }
         .dark-theme .social-links a {
             color: #e0e0e0;
+            background: rgba(255, 255, 255, 0.1);
         }
         .dark-theme #themeToggle,
         .dark-theme #addToHomeScreen {
             background-color: #2980b9;
             color: #ffffff;
+        }
+
+        @media (max-width: 600px) {
+            .box:nth-child(7) {
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
@@ -717,11 +762,14 @@
             </a>
         </div>
         
-        <!-- فوتتر -->
+        <!-- فوتتر جدید -->
         <footer>
-             <div>Supervised by: Dr.Amir Salari 
-Emergency & Critical Care Instructor, Tehran University of Medical Sciences </div>
-<div class="social-links">
+            <div style="font-weight: bold; color: #4a6baf; font-size: 15px;">
+                Supervised by: Dr. Amir Salari<br>
+                Emergency & Critical Care Instructor, Tehran University of Medical Sciences
+            </div>
+            
+            <div class="social-links">
                 <a href="https://wa.me/989124065510" target="_blank" class="whatsapp">
                     <i class="fab fa-whatsapp"></i>
                 </a>
@@ -729,7 +777,12 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
                     <i class="fab fa-instagram"></i>
                 </a>
             </div>
-            <div>Designed and coded by: Tavakol Piri Imam Khomeini Hospital Complex Medical Ward Nurse </div>
+            
+            <div style="margin-top: 10px; font-style: italic;">
+                Designed and coded by: Tavakol Piri<br>
+                Medical Ward Nurse, Imam Khomeini Hospital Complex
+            </div>
+            
             <div class="social-links">
                 <a href="https://wa.me/989905415680" target="_blank" class="whatsapp">
                     <i class="fab fa-whatsapp"></i>
@@ -738,6 +791,7 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
                     <i class="fab fa-instagram"></i>
                 </a>
             </div>
+            
             <div class="datetime" id="datetime"></div>
         </footer>
     </div>
@@ -822,7 +876,7 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             weightInput.style.display = prescribedDoseUnit === 'mcg/kg/min' ? 'block' : 'none';
         }
         
-        // تابع محاسبه دارو
+        // تابع محاسبه دارو (با تغییر ترتیب عدد و واحد)
         function calculateDrug() {
             const drugDose = parseFloat(document.getElementById('drugDose').value);
             const drugDoseUnit = document.getElementById('drugDoseUnit').value;
@@ -875,16 +929,16 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             const infusionRate = (prescribedDoseMgOrUPerHour / drugDoseMgOrU) * syringeVolume;
             
             if (infusionMethod === 'pump') {
-                resultText = `نرخ تزریق: ${formatNumber(infusionRate)} ml/h (پمپ)`;
+                resultText = `RATE: ${formatNumber(infusionRate)} ml/h`;
             } else {
-                resultText = `نرخ تزریق: ${formatNumber(infusionRate)} gtt/min (میکروست)`;
+                resultText = `RATE: ${formatNumber(infusionRate)} gtt/min`;
             }
 
             document.getElementById('drugResult').innerText = resultText;
             window.lastCalculationResult = resultText;
         }
         
-        // تابع محاسبه داروهای درصدی
+        // تابع محاسبه داروهای درصدی (با تغییر ترتیب عدد و واحد)
         function calculatePercentageDrug() {
             const drugPercentage = parseFloat(document.getElementById('drugPercentage').value);
             const requiredDose = parseFloat(document.getElementById('requiredDose').value);
@@ -900,7 +954,7 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             window.lastCalculationResult = resultText;
         }
         
-        // تابع محاسبه سرم
+        // تابع محاسبه سرم (با تغییر ترتیب عدد و واحد)
         function calculateFluid() {
             const fluidVolume = parseFloat(document.getElementById('fluidVolume').value);
             const infusionTime = parseFloat(document.getElementById('infusionTime').value);
@@ -917,7 +971,7 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             window.lastCalculationResult = resultText;
         }
         
-        // تابع محاسبه میکروست
+        // تابع محاسبه میکروست (با تغییر ترتیب عدد و واحد)
         function calculateMicroset() {
             const microsetVolume = parseFloat(document.getElementById('microsetVolume').value);
             const microsetInfusionTime = parseFloat(document.getElementById('microsetInfusionTime').value);
@@ -933,7 +987,7 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             window.lastCalculationResult = resultText;
         }
         
-        // تابع تبدیل mEq به mg
+        // تابع تبدیل mEq به mg (با تغییر ترتیب عدد و واحد)
         function calculateMgFromMEq() {
             const compound = document.getElementById('compound').value;
             const mEq = parseFloat(document.getElementById('mEq').value);
@@ -951,7 +1005,7 @@ Emergency & Critical Care Instructor, Tehran University of Medical Sciences </di
             window.lastCalculationResult = resultText;
         }
         
-        // تابع محاسبه تغییر غلظت
+        // تابع محاسبه تغییر غلظت (با تغییر ترتیب عدد و واحد)
         function calculateReplacement() {
             const C_current = parseFloat(document.getElementById('currentConc').value);
             const C_desired = parseFloat(document.getElementById('desiredConc').value);
